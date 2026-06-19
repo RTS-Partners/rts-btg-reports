@@ -9,20 +9,21 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f1f5f9;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --primary: #1e3a5f;
-      --primary-hover: #162d4a;
-      --accent: #2563eb;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --green: #10b981;
-      --green-hover: #059669;
-      --red: #ef4444;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
-      --shadow-lg: 0 4px 20px rgba(0,0,0,.12);
-      --radius: 8px;
+      --bg:           #F5F4EF;
+      --surface:      #FFFFFF;
+      --border:       #E4E2DA;
+      --primary:      #1A1A1A;
+      --primary-hover:#333333;
+      --accent:       #C4A35A;
+      --accent-hover: #A88640;
+      --text:         #1A1A1A;
+      --text-muted:   #7A7370;
+      --green:        #2D6A4F;
+      --green-hover:  #1B5233;
+      --red:          #B83232;
+      --shadow:       0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-lg:    0 6px 28px rgba(0,0,0,.12);
+      --radius:       6px;
     }
 
     body {
@@ -33,22 +34,23 @@
       font-size: 14px;
     }
 
-    /* ── LOGIN ────────────────────────────────────── */
+    /* ── LOGIN ─────────────────────────────────── */
     #login-screen {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       padding: 1rem;
+      background: var(--bg);
     }
 
     .login-card {
       background: var(--surface);
-      border-radius: 14px;
+      border-radius: 10px;
       box-shadow: var(--shadow-lg);
       padding: 2.5rem 2.25rem;
       width: 100%;
-      max-width: 380px;
+      max-width: 390px;
     }
 
     .login-logo {
@@ -56,27 +58,26 @@
       margin-bottom: 2rem;
     }
 
-    .login-logo-text {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--primary);
-      letter-spacing: -0.03em;
-    }
+    .login-logo svg { display: block; margin: 0 auto; }
 
     .login-logo-sub {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
-      margin-top: 0.3rem;
+      margin-top: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
 
-    .form-group { margin-bottom: 1.1rem; }
+    .form-group { margin-bottom: 1rem; }
 
     label {
       display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-size: 0.78rem;
+      font-weight: 700;
       margin-bottom: 0.35rem;
       color: var(--text);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     input, select {
@@ -94,7 +95,7 @@
 
     input:focus, select:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      box-shadow: 0 0 0 3px rgba(196,163,90,.15);
     }
 
     .btn {
@@ -102,19 +103,20 @@
       align-items: center;
       justify-content: center;
       gap: 0.4rem;
-      padding: 0.6rem 1.25rem;
+      padding: 0.625rem 1.25rem;
       border: none;
       border-radius: var(--radius);
       font-size: 0.875rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: background 0.15s, transform 0.08s;
       font-family: inherit;
       white-space: nowrap;
+      letter-spacing: 0.02em;
     }
 
-    .btn:active { transform: scale(0.97); }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn:active  { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
@@ -131,10 +133,10 @@
       color: var(--red);
       font-size: 0.8rem;
       padding: 0.55rem 0.75rem;
-      background: #fef2f2;
+      background: #fdf2f2;
       border-radius: var(--radius);
-      border: 1px solid #fecaca;
-      margin-bottom: 0.85rem;
+      border: 1px solid #f5c6c6;
+      margin-bottom: 0.9rem;
       display: none;
     }
 
@@ -144,7 +146,9 @@
       gap: 0.75rem;
       margin: 1.1rem 0;
       color: var(--text-muted);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
     .divider::before, .divider::after {
       content: '';
@@ -157,44 +161,47 @@
       background: var(--surface);
       color: var(--text);
       border: 1.5px solid var(--border);
+      font-weight: 600;
     }
     .btn-google:hover:not(:disabled) { background: var(--bg); }
 
-    /* ── APP ──────────────────────────────────────── */
+    /* ── APP ───────────────────────────────────── */
     #app-screen { display: none; }
 
     .header {
       background: var(--primary);
       color: #fff;
-      padding: 0.8rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+      box-shadow: 0 2px 10px rgba(0,0,0,.25);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
-    .header-brand { font-size: 1rem; font-weight: 800; letter-spacing: -0.02em; }
-    .header-sep { color: rgba(255,255,255,.3); margin: 0 0.5rem; }
-    .header-page { font-size: 0.875rem; color: rgba(255,255,255,.75); }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-logo svg { display: block; }
+    .header-sep { width: 1px; height: 28px; background: rgba(255,255,255,.2); }
+    .header-page { font-size: 0.8rem; color: rgba(255,255,255,.65); letter-spacing: 0.04em; }
 
     .header-right { display: flex; align-items: center; gap: 0.75rem; }
-    .header-user { font-size: 0.78rem; color: rgba(255,255,255,.65); }
+    .header-user  { font-size: 0.75rem; color: rgba(255,255,255,.55); }
 
     .btn-logout {
-      background: rgba(255,255,255,.1);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.85);
+      border: 1px solid rgba(255,255,255,.18);
       padding: 0.35rem 0.75rem;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
+      font-weight: 600;
     }
-    .btn-logout:hover { background: rgba(255,255,255,.2); }
+    .btn-logout:hover { background: rgba(255,255,255,.16); }
 
-    .main { padding: 1.5rem; max-width: 1700px; margin: 0 auto; }
+    .main { padding: 1.5rem; max-width: 1760px; margin: 0 auto; }
 
-    /* ── FILTER CARD ──────────────────────────────── */
+    /* ── CARDS ─────────────────────────────────── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -205,24 +212,24 @@
     .filters-card { padding: 1.25rem; margin-bottom: 1.25rem; }
 
     .card-label {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.09em;
       margin-bottom: 1rem;
     }
 
     .filters-grid {
       display: grid;
-      grid-template-columns: 180px 160px 1fr auto;
+      grid-template-columns: 170px 160px 1fr auto;
       gap: 1rem;
       align-items: end;
     }
 
     .filters-actions { display: flex; gap: 0.5rem; }
 
-    /* ── SUMMARY CARDS ────────────────────────────── */
+    /* ── SUMMARY ───────────────────────────────── */
     .summary-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -230,25 +237,25 @@
       margin-bottom: 1.25rem;
     }
 
-    .summary-card { padding: 1.1rem 1.25rem; }
+    .summary-card { padding: 1.1rem 1.35rem; }
 
     .summary-label {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.07em;
-      margin-bottom: 0.4rem;
+      letter-spacing: 0.09em;
+      margin-bottom: 0.45rem;
     }
 
     .summary-value { font-size: 1.45rem; font-weight: 800; color: var(--primary); }
-    .summary-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .summary-sub   { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
 
-    /* ── TABLE CARD ───────────────────────────────── */
+    /* ── TABLE ─────────────────────────────────── */
     .table-card { overflow: hidden; margin-bottom: 1.5rem; }
 
     .table-head {
-      padding: 0.9rem 1.25rem;
+      padding: 0.85rem 1.25rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -256,21 +263,21 @@
     }
 
     .table-title { font-size: 0.875rem; font-weight: 700; }
-    .table-count { font-size: 0.8rem; color: var(--text-muted); font-weight: 400; margin-left: 0.4rem; }
+    .table-count { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; margin-left: 0.4rem; }
 
     .table-wrapper { overflow-x: auto; }
 
     table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
 
     thead th {
-      background: #f8fafc;
+      background: #F8F7F3;
       padding: 0.6rem 0.875rem;
       text-align: left;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
       cursor: pointer;
@@ -280,45 +287,45 @@
       transition: background 0.1s, color 0.1s;
     }
 
-    thead th:hover { background: #f1f5f9; color: var(--text); }
-    thead th.sort-asc::after { content: ' ↑'; opacity: 0.7; }
-    thead th.sort-desc::after { content: ' ↓'; opacity: 0.7; }
+    thead th:hover { background: #F0EFEA; color: var(--text); }
+    thead th.sort-asc::after  { content: ' ↑'; opacity: 0.6; }
+    thead th.sort-desc::after { content: ' ↓'; opacity: 0.6; }
 
-    tbody tr { border-bottom: 1px solid #f8fafc; transition: background 0.08s; }
-    tbody tr:hover { background: #f8fafc; }
+    tbody tr { border-bottom: 1px solid #F5F4EF; transition: background 0.08s; }
+    tbody tr:hover { background: #FAFAF7; }
 
     tbody td { padding: 0.575rem 0.875rem; color: var(--text); white-space: nowrap; }
 
     .td-right { text-align: right; font-variant-numeric: tabular-nums; }
     .td-muted { color: var(--text-muted); }
-    .td-mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.8rem; }
+    .td-mono  { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.78rem; }
 
     .badge {
       display: inline-block;
-      padding: 0.2rem 0.55rem;
-      border-radius: 5px;
-      font-size: 0.72rem;
+      padding: 0.18rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
       font-weight: 700;
-      background: #eff6ff;
-      color: var(--accent);
-      letter-spacing: 0.02em;
+      background: #F5EFE0;
+      color: #9B7A30;
+      letter-spacing: 0.03em;
     }
 
-    /* ── STATES ───────────────────────────────────── */
+    /* ── STATES ────────────────────────────────── */
     .state-box {
       padding: 3.5rem 1rem;
       text-align: center;
       color: var(--text-muted);
     }
 
-    .state-icon { font-size: 2.5rem; margin-bottom: 0.75rem; line-height: 1; }
-    .state-msg { font-size: 0.9rem; }
+    .state-icon { font-size: 2.25rem; margin-bottom: 0.7rem; line-height: 1; }
+    .state-msg  { font-size: 0.875rem; }
     .state-msg strong { color: var(--text); }
 
     .spinner {
-      width: 30px; height: 30px;
+      width: 28px; height: 28px;
       border: 3px solid var(--border);
-      border-top-color: var(--primary);
+      border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 0.65s linear infinite;
       margin: 0 auto 0.75rem;
@@ -326,7 +333,7 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── RESPONSIVE ───────────────────────────────── */
+    /* ── RESPONSIVE ────────────────────────────── */
     @media (max-width: 900px) {
       .filters-grid { grid-template-columns: 1fr 1fr; }
       .filters-grid > *:last-child { grid-column: 1 / -1; }
@@ -335,21 +342,33 @@
     }
 
     @media (max-width: 600px) {
-      .header { padding: 0.7rem 1rem; }
+      .header { padding: 0.65rem 1rem; }
       .header-page { display: none; }
-      .main { padding: 1rem; }
+      .main { padding: 0.9rem; }
       .filters-grid { grid-template-columns: 1fr; }
-      .summary-row { grid-template-columns: 1fr; }
+      .summary-row  { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- ═══════════ LOGIN SCREEN ═══════════ -->
+<!-- ════════ LOGIN ════════ -->
 <div id="login-screen">
   <div class="login-card">
+
     <div class="login-logo">
-      <div class="login-logo-text">RTS Partners</div>
+      <!-- RTS Partners logo (black) -->
+      <svg width="200" height="103" viewBox="0 0 696 359" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#lc)">
+          <path d="M453.583 147.455C455.808 147.455 457.629 147.286 459.045 146.949C460.528 146.545 461.708 146.039 462.585 145.432C463.461 144.758 464.068 143.982 464.405 143.106C464.743 142.229 464.911 141.251 464.911 140.172C464.911 137.88 463.832 135.992 461.674 134.508C459.517 132.957 455.808 131.305 450.548 129.552C448.256 128.743 445.963 127.832 443.67 126.821C441.378 125.742 439.321 124.427 437.5 122.876C435.68 121.258 434.196 119.336 433.05 117.111C431.903 114.818 431.33 112.053 431.33 108.817C431.33 105.58 431.937 102.68 433.151 100.118C434.365 97.4881 436.084 95.2629 438.309 93.4422C440.535 91.6216 443.232 90.2392 446.401 89.2952C449.571 88.2837 453.144 87.778 457.123 87.778C461.843 87.778 465.923 88.2837 469.362 89.2952C472.801 90.3066 475.633 91.4193 477.858 92.633L473.306 105.074C471.351 104.063 469.159 103.186 466.732 102.444C464.372 101.635 461.506 101.231 458.134 101.231C454.358 101.231 451.627 101.77 449.941 102.849C448.323 103.86 447.514 105.445 447.514 107.603C447.514 108.884 447.817 109.963 448.424 110.84C449.031 111.716 449.874 112.525 450.953 113.267C452.099 113.941 453.38 114.582 454.796 115.189C456.28 115.728 457.898 116.302 459.652 116.908C463.293 118.257 466.462 119.606 469.159 120.954C471.857 122.236 474.082 123.753 475.835 125.506C477.656 127.259 479.004 129.316 479.881 131.676C480.758 134.036 481.196 136.902 481.196 140.274C481.196 146.814 478.903 151.905 474.318 155.547C469.733 159.121 462.821 160.908 453.583 160.908C450.481 160.908 447.682 160.705 445.187 160.301C442.692 159.964 440.467 159.525 438.512 158.986C436.624 158.446 434.972 157.873 433.555 157.266C432.207 156.659 431.06 156.086 430.116 155.547L434.567 143.005C436.657 144.151 439.22 145.196 442.254 146.14C445.356 147.017 449.132 147.455 453.583 147.455Z" fill="#1A1A1A"/>
+          <path d="M424.327 89.3956V102.848H403.187V159.491H387.408V102.848H366.268V89.3956H424.327Z" fill="#1A1A1A"/>
+          <path d="M326.394 88.5898C336.913 88.5898 344.971 90.4779 350.568 94.2541C356.165 97.9628 358.963 103.762 358.963 111.651C358.963 116.574 357.817 120.586 355.524 123.688C353.299 126.722 350.062 129.116 345.814 130.87C347.23 132.623 348.714 134.646 350.265 136.938C351.816 139.164 353.333 141.524 354.816 144.019C356.367 146.446 357.851 149.009 359.267 151.706C360.683 154.336 361.998 156.932 363.211 159.494H345.511C344.229 157.202 342.915 154.875 341.566 152.515C340.285 150.155 338.936 147.862 337.52 145.637C336.171 143.412 334.823 141.321 333.474 139.366C332.125 137.343 330.777 135.522 329.428 133.904H321.64V159.494H305.861V90.4105C309.3 89.7362 312.84 89.2642 316.481 88.9944C320.19 88.7247 323.494 88.5898 326.394 88.5898ZM327.304 102.042C326.158 102.042 325.113 102.076 324.169 102.144C323.292 102.211 322.449 102.278 321.64 102.346V121.362H326.09C332.024 121.362 336.273 120.62 338.835 119.136C341.397 117.653 342.679 115.124 342.679 111.55C342.679 108.111 341.364 105.684 338.734 104.268C336.171 102.784 332.361 102.042 327.304 102.042Z" fill="#1A1A1A"/>
+          <path d="M260.376 96.492C261.897 97.6174 262.521 99.5904 261.926 101.386L214.394 244.141L213.881 245.688C213.281 247.489 211.588 248.696 209.693 248.681L208.148 248.672L52.4961 247.58H51.6662C49.7667 247.561 48.0878 246.33 47.517 244.52L47.2915 243.801L0.229794 95.6779L0.201013 95.5917C-0.365014 93.8103 0.292152 91.866 1.82234 90.7885L129.034 1.22289L130.358 0.289062L131.605 1.22289L193.288 47.2628L192.568 49.5423L130.358 5.69566L9.55004 95.9413L56.4295 236.618L203.328 235.584L249.996 88.8059L260.376 96.4872V96.492Z" fill="#1A1A1A"/>
+          <path d="M238.148 80.0448L193.149 214.951L192.631 216.507C192.031 218.308 190.333 219.515 188.429 219.496L186.899 219.481L73.7318 218.389L72.8876 218.38C70.9881 218.361 69.3188 217.125 68.7527 215.315L68.5321 214.611L34.5993 106.829L34.5609 106.714C33.9997 104.937 34.6617 103.007 36.1918 101.939L129.035 37.3044L129.097 37.2613C129.855 36.7298 130.867 36.7489 131.606 37.3044L184.006 76.5872L183.272 78.9002L130.363 41.782L43.9195 107.068L77.6605 207.418L182.083 206.413L225.221 70.4767L238.153 80.0448H238.148Z" fill="#1A1A1A"/>
+          <path d="M211.627 60.4188L170.407 183.707L169.885 185.278C169.28 187.088 167.568 188.295 165.659 188.266L164.162 188.242L96.4835 187.151L95.6008 187.136C93.7061 187.107 92.0464 185.862 91.49 184.052C87.8156 172.099 74.9889 130.422 71.3433 118.57C70.8012 116.812 71.4728 114.911 72.9982 113.877L129.044 75.9298L129.14 75.8628C129.893 75.3504 130.891 75.3791 131.615 75.9298L174.067 108.005L173.343 110.29L130.397 80.4122L80.7259 118.948L100.378 176.151L159.332 175.198L198.704 50.8555L211.636 60.4188H211.627Z" fill="#1A1A1A"/>
+        </g>
+        <defs><clipPath id="lc"><rect width="696" height="359" fill="white"/></clipPath></defs>
+      </svg>
       <div class="login-logo-sub">Portal de Relatórios</div>
     </div>
 
@@ -369,26 +388,37 @@
     <div class="divider">ou</div>
 
     <button class="btn btn-google btn-full" id="google-btn" onclick="doGoogleLogin()">
-      <svg width="18" height="18" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <svg width="17" height="17" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        <path fill="none" d="M0 0h48v48H0z"/>
       </svg>
       Entrar com Google
     </button>
   </div>
 </div>
 
-<!-- ═══════════ APP SCREEN ═══════════ -->
+<!-- ════════ APP ════════ -->
 <div id="app-screen">
 
-  <!-- Header -->
   <div class="header">
-    <div style="display:flex;align-items:center">
-      <span class="header-brand">RTS Partners</span>
-      <span class="header-sep">|</span>
+    <div class="header-left">
+      <!-- RTS logo white -->
+      <div class="header-logo">
+        <svg width="90" height="46" viewBox="0 0 696 359" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#hc)">
+            <path d="M453.583 147.455C455.808 147.455 457.629 147.286 459.045 146.949C460.528 146.545 461.708 146.039 462.585 145.432C463.461 144.758 464.068 143.982 464.405 143.106C464.743 142.229 464.911 141.251 464.911 140.172C464.911 137.88 463.832 135.992 461.674 134.508C459.517 132.957 455.808 131.305 450.548 129.552C448.256 128.743 445.963 127.832 443.67 126.821C441.378 125.742 439.321 124.427 437.5 122.876C435.68 121.258 434.196 119.336 433.05 117.111C431.903 114.818 431.33 112.053 431.33 108.817C431.33 105.58 431.937 102.68 433.151 100.118C434.365 97.4881 436.084 95.2629 438.309 93.4422C440.535 91.6216 443.232 90.2392 446.401 89.2952C449.571 88.2837 453.144 87.778 457.123 87.778C461.843 87.778 465.923 88.2837 469.362 89.2952C472.801 90.3066 475.633 91.4193 477.858 92.633L473.306 105.074C471.351 104.063 469.159 103.186 466.732 102.444C464.372 101.635 461.506 101.231 458.134 101.231C454.358 101.231 451.627 101.77 449.941 102.849C448.323 103.86 447.514 105.445 447.514 107.603C447.514 108.884 447.817 109.963 448.424 110.84C449.031 111.716 449.874 112.525 450.953 113.267C452.099 113.941 453.38 114.582 454.796 115.189C456.28 115.728 457.898 116.302 459.652 116.908C463.293 118.257 466.462 119.606 469.159 120.954C471.857 122.236 474.082 123.753 475.835 125.506C477.656 127.259 479.004 129.316 479.881 131.676C480.758 134.036 481.196 136.902 481.196 140.274C481.196 146.814 478.903 151.905 474.318 155.547C469.733 159.121 462.821 160.908 453.583 160.908C450.481 160.908 447.682 160.705 445.187 160.301C442.692 159.964 440.467 159.525 438.512 158.986C436.624 158.446 434.972 157.873 433.555 157.266C432.207 156.659 431.06 156.086 430.116 155.547L434.567 143.005C436.657 144.151 439.22 145.196 442.254 146.14C445.356 147.017 449.132 147.455 453.583 147.455Z" fill="white"/>
+            <path d="M424.327 89.3956V102.848H403.187V159.491H387.408V102.848H366.268V89.3956H424.327Z" fill="white"/>
+            <path d="M326.394 88.5898C336.913 88.5898 344.971 90.4779 350.568 94.2541C356.165 97.9628 358.963 103.762 358.963 111.651C358.963 116.574 357.817 120.586 355.524 123.688C353.299 126.722 350.062 129.116 345.814 130.87C347.23 132.623 348.714 134.646 350.265 136.938C351.816 139.164 353.333 141.524 354.816 144.019C356.367 146.446 357.851 149.009 359.267 151.706C360.683 154.336 361.998 156.932 363.211 159.494H345.511C344.229 157.202 342.915 154.875 341.566 152.515C340.285 150.155 338.936 147.862 337.52 145.637C336.171 143.412 334.823 141.321 333.474 139.366C332.125 137.343 330.777 135.522 329.428 133.904H321.64V159.494H305.861V90.4105C309.3 89.7362 312.84 89.2642 316.481 88.9944C320.19 88.7247 323.494 88.5898 326.394 88.5898ZM327.304 102.042C326.158 102.042 325.113 102.076 324.169 102.144C323.292 102.211 322.449 102.278 321.64 102.346V121.362H326.09C332.024 121.362 336.273 120.62 338.835 119.136C341.397 117.653 342.679 115.124 342.679 111.55C342.679 108.111 341.364 105.684 338.734 104.268C336.171 102.784 332.361 102.042 327.304 102.042Z" fill="white"/>
+            <path d="M260.376 96.492C261.897 97.6174 262.521 99.5904 261.926 101.386L214.394 244.141L213.881 245.688C213.281 247.489 211.588 248.696 209.693 248.681L208.148 248.672L52.4961 247.58H51.6662C49.7667 247.561 48.0878 246.33 47.517 244.52L47.2915 243.801L0.229794 95.6779L0.201013 95.5917C-0.365014 93.8103 0.292152 91.866 1.82234 90.7885L129.034 1.22289L130.358 0.289062L131.605 1.22289L193.288 47.2628L192.568 49.5423L130.358 5.69566L9.55004 95.9413L56.4295 236.618L203.328 235.584L249.996 88.8059L260.376 96.4872V96.492Z" fill="white"/>
+            <path d="M238.148 80.0448L193.149 214.951L192.631 216.507C192.031 218.308 190.333 219.515 188.429 219.496L186.899 219.481L73.7318 218.389L72.8876 218.38C70.9881 218.361 69.3188 217.125 68.7527 215.315L68.5321 214.611L34.5993 106.829L34.5609 106.714C33.9997 104.937 34.6617 103.007 36.1918 101.939L129.035 37.3044L129.097 37.2613C129.855 36.7298 130.867 36.7489 131.606 37.3044L184.006 76.5872L183.272 78.9002L130.363 41.782L43.9195 107.068L77.6605 207.418L182.083 206.413L225.221 70.4767L238.153 80.0448H238.148Z" fill="white"/>
+            <path d="M211.627 60.4188L170.407 183.707L169.885 185.278C169.28 187.088 167.568 188.295 165.659 188.266L164.162 188.242L96.4835 187.151L95.6008 187.136C93.7061 187.107 92.0464 185.862 91.49 184.052C87.8156 172.099 74.9889 130.422 71.3433 118.57C70.8012 116.812 71.4728 114.911 72.9982 113.877L129.044 75.9298L129.14 75.8628C129.893 75.3504 130.891 75.3791 131.615 75.9298L174.067 108.005L173.343 110.29L130.397 80.4122L80.7259 118.948L100.378 176.151L159.332 175.198L198.704 50.8555L211.636 60.4188H211.627Z" fill="white"/>
+          </g>
+          <defs><clipPath id="hc"><rect width="696" height="359" fill="white"/></clipPath></defs>
+        </svg>
+      </div>
+      <div class="header-sep"></div>
       <span class="header-page">BTG Posições</span>
     </div>
     <div class="header-right">
@@ -414,7 +444,7 @@
           </select>
         </div>
         <div class="form-group" style="margin:0">
-          <label for="f-client">Código Cliente</label>
+          <label for="f-client">Cliente</label>
           <select id="f-client">
             <option value="">Todos</option>
           </select>
@@ -490,52 +520,77 @@
       </div>
     </div>
 
-  </div><!-- /main -->
-</div><!-- /app-screen -->
+  </div>
+</div>
 
 <script>
-  /* ── CONFIG ────────────────────────────────────── */
-  const SB_URL  = 'https://gmvraqrvovvpuxmqgkaz.supabase.co';
-  const SB_KEY  = 'sb_publishable_fLL0TQYYCP7frJIqf-S49g_3Q2LNDUI';
+  /* ── CONFIG ─────────────────────────────────── */
+  const SB_URL = 'https://gmvraqrvovvpuxmqgkaz.supabase.co';
+  const SB_KEY = 'sb_publishable_fLL0TQYYCP7frJIqf-S49g_3Q2LNDUI';
 
-  /* ── STATE ─────────────────────────────────────── */
+  /* ── STATE ──────────────────────────────────── */
   let sb;
-  let clientMap    = {};   // conta_btg → {nome, banker, code, client_code}
-  let allClients   = [];   // raw tb_clientes rows
-  let allPositions = [];   // merged positions for current date
-  let filteredRows = [];   // after filters
-  let sortCol  = 'valor_bruto';
-  let sortDir  = 'desc';
+  let appReady     = false;
+  let clientMap    = {};   // conta_btg (trimmed) → {nome, banker, code, client_code, id, conta}
+  let allClients   = [];   // tb_clientes rows with conta_btg not null
+  let holidays     = new Set(); // YYYY-MM-DD strings
+  let allPositions = [];
+  let filteredRows = [];
+  let sortCol = 'valor_bruto';
+  let sortDir = 'desc';
 
-  /* ── INIT ──────────────────────────────────────── */
+  /* ── INIT ───────────────────────────────────── */
   window.addEventListener('DOMContentLoaded', async () => {
     sb = supabase.createClient(SB_URL, SB_KEY);
 
-    // Handle OAuth redirects and session restores
+    // Fetch holidays before login (RLS disabled on tb_feriados)
+    await loadHolidays();
+
+    // Handle OAuth redirects and session state changes
     sb.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        const loginVisible = document.getElementById('login-screen').style.display !== 'none';
-        if (loginVisible) await enterApp(session.user);
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session && !appReady) {
+        appReady = true;
+        await enterApp(session.user);
       }
     });
 
-    // Restore session immediately (covers email/password + returning users)
+    // Immediate session check (returning users / existing sessions)
     const { data: { session } } = await sb.auth.getSession();
-    if (session) await enterApp(session.user);
-
-    // Default date = today
-    document.getElementById('f-date').value = todayISO();
+    if (session && !appReady) {
+      appReady = true;
+      await enterApp(session.user);
+    }
 
     // Enter key triggers login
     document.getElementById('inp-password').addEventListener('keydown', e => {
       if (e.key === 'Enter') doLogin();
     });
 
-    // Banker change cascades client dropdown
     document.getElementById('f-banker').addEventListener('change', rebuildClientDropdown);
   });
 
-  /* ── AUTH ──────────────────────────────────────── */
+  /* ── HOLIDAYS ───────────────────────────────── */
+  async function loadHolidays() {
+    try {
+      const { data } = await sb.from('tb_feriados').select('data');
+      if (data) data.forEach(r => holidays.add(r.data));
+    } catch (_) {}
+  }
+
+  function lastWorkingDay() {
+    const d = new Date();
+    d.setHours(12, 0, 0, 0); // avoid DST issues
+    d.setDate(d.getDate() - 1); // start from yesterday
+    for (let i = 0; i < 30; i++) {
+      const dow = d.getDay();
+      const iso = d.toISOString().split('T')[0];
+      if (dow !== 0 && dow !== 6 && !holidays.has(iso)) return iso;
+      d.setDate(d.getDate() - 1);
+    }
+    return new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  }
+
+  /* ── AUTH ───────────────────────────────────── */
   async function doLogin() {
     const email    = document.getElementById('inp-email').value.trim();
     const password = document.getElementById('inp-password').value;
@@ -543,44 +598,41 @@
     const btn      = document.getElementById('login-btn');
 
     errEl.style.display = 'none';
-    btn.textContent  = 'Entrando…';
-    btn.disabled     = true;
+    btn.textContent = 'Entrando…';
+    btn.disabled    = true;
 
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
     if (error) {
-      errEl.textContent  = 'E-mail ou senha incorretos. Tente novamente.';
+      errEl.textContent   = 'E-mail ou senha incorretos. Tente novamente.';
       errEl.style.display = 'block';
-      btn.textContent  = 'Entrar';
-      btn.disabled     = false;
+      btn.textContent = 'Entrar';
+      btn.disabled    = false;
       return;
     }
 
-    await enterApp(data.user);
+    if (!appReady) {
+      appReady = true;
+      await enterApp(data.user);
+    }
   }
 
   async function doGoogleLogin() {
     const errEl = document.getElementById('login-error');
     const btn   = document.getElementById('google-btn');
     errEl.style.display = 'none';
-    btn.disabled = true;
+    btn.disabled    = true;
     btn.textContent = 'Redirecionando…';
 
-    // Strip any existing hash/query so Supabase can append its own params
     const redirectTo = window.location.href.split('#')[0].split('?')[0];
-
-    const { error } = await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo }
-    });
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
 
     if (error) {
       errEl.textContent   = 'Erro ao iniciar login com Google: ' + error.message;
       errEl.style.display = 'block';
       btn.disabled = false;
-      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg> Entrar com Google`;
+      btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Entrar com Google`;
     }
-    // If no error, the browser is redirecting — no further action needed
   }
 
   async function doLogout() {
@@ -588,33 +640,47 @@
     location.reload();
   }
 
+  /* ── ENTER APP ──────────────────────────────── */
   async function enterApp(user) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-screen').style.display   = 'block';
-    document.getElementById('hdr-email').textContent       = user.email;
+    document.getElementById('hdr-email').textContent      = user.email;
+
+    // Set default date to last working day
+    document.getElementById('f-date').value = lastWorkingDay();
 
     await loadClients();
+
+    if (allClients.length === 0) {
+      // Show soft warning — filters will still work if positions load
+      console.warn('No clients loaded — check RLS policies for tb_clientes');
+    }
+
     buildBankerDropdown();
     rebuildClientDropdown();
   }
 
-  /* ── CLIENTS ───────────────────────────────────── */
+  /* ── CLIENTS ────────────────────────────────── */
   async function loadClients() {
     const { data, error } = await sb
       .from('tb_clientes')
-      .select('id, conta_btg, nome, banker, code');
+      .select('id, conta_btg, nome, banker, code, conta')
+      .not('conta_btg', 'is', null);
 
-    if (error) { console.error('loadClients:', error); return; }
+    if (error) { console.error('loadClients error:', error); return; }
 
-    allClients = (data || []);
+    // Trim conta_btg values to remove stray \r\n
+    allClients = (data || []).map(c => ({ ...c, conta_btg: c.conta_btg ? c.conta_btg.trim() : null }))
+                             .filter(c => c.conta_btg);
     clientMap  = {};
     allClients.forEach(c => {
-      if (!c.conta_btg) return;
       clientMap[c.conta_btg] = {
-        nome:        c.nome       || '',
-        banker:      c.banker     || '',
-        code:        c.code       || '',
-        client_code: (c.banker && c.code) ? `${c.banker}-${c.code}` : ''
+        nome:        c.nome      || '',
+        banker:      c.banker    || '',
+        code:        c.code      || '',
+        client_code: (c.banker && c.code) ? `${c.banker}-${c.code}` : '',
+        id:          c.id,
+        conta:       c.conta     || ''
       };
     });
   }
@@ -631,26 +697,25 @@
     const sel    = document.getElementById('f-client');
     const prev   = sel.value;
 
-    const rows = banker
-      ? allClients.filter(c => c.banker === banker)
-      : allClients;
+    const rows = banker ? allClients.filter(c => c.banker === banker) : allClients;
 
+    // Sort by banker-code then conta_btg
     const opts = rows
-      .filter(c => c.banker && c.code)
-      .map(c => ({ value: `${c.banker}-${c.code}`, label: `${c.banker}-${c.code} — ${c.nome}` }))
-      .sort((a, b) => a.value.localeCompare(b.value));
+      .filter(c => c.conta_btg)
+      .map(c => ({
+        value: c.conta_btg,
+        label: `${c.conta_btg} — ${c.banker}-${c.code} — ${c.id} — ${c.conta}`
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
     sel.innerHTML = '<option value="">Todos</option>';
     opts.forEach(o => addOption(sel, o.value, o.label));
 
-    // Restore previous selection if still valid
     if (prev && opts.some(o => o.value === prev)) sel.value = prev;
-
-    // If positions are loaded, re-filter
     if (allPositions.length) applyClientFilter();
   }
 
-  /* ── POSITIONS ─────────────────────────────────── */
+  /* ── POSITIONS ──────────────────────────────── */
   async function applyFilters() {
     const date = document.getElementById('f-date').value;
     if (!date) { alert('Selecione uma data para buscar as posições.'); return; }
@@ -670,8 +735,7 @@
 
   async function fetchPositions(date) {
     const PAGE = 1000;
-    let from = 0;
-    let all  = [];
+    let from = 0, all = [];
 
     while (true) {
       const { data, error } = await sb
@@ -688,23 +752,25 @@
     }
 
     return all.map(p => {
-      const ci = clientMap[p.conta_btg] || {};
+      const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg;
+      const ci  = clientMap[key] || {};
       return {
         ...p,
-        client_name: ci.nome       || p.titular || '',
-        banker:      ci.banker     || '',
+        conta_btg:   key,
+        client_name: ci.nome        || p.titular || '',
+        banker:      ci.banker      || '',
         client_code: ci.client_code || ''
       };
     });
   }
 
   function applyClientFilter() {
-    const banker     = document.getElementById('f-banker').value;
-    const clientCode = document.getElementById('f-client').value;
+    const banker   = document.getElementById('f-banker').value;
+    const contaBtg = document.getElementById('f-client').value;
 
     filteredRows = allPositions.filter(p => {
-      if (banker     && p.banker      !== banker)     return false;
-      if (clientCode && p.client_code !== clientCode) return false;
+      if (banker   && p.banker    !== banker)   return false;
+      if (contaBtg && p.conta_btg !== contaBtg) return false;
       return true;
     });
 
@@ -714,17 +780,16 @@
   }
 
   function clearFilters() {
-    document.getElementById('f-date').value   = todayISO();
+    document.getElementById('f-date').value   = lastWorkingDay();
     document.getElementById('f-banker').value = '';
     rebuildClientDropdown();
-
     allPositions = [];
     filteredRows = [];
     setStateEmpty();
     clearSummary();
   }
 
-  /* ── SORT ──────────────────────────────────────── */
+  /* ── SORT ───────────────────────────────────── */
   function sortBy(col) {
     if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
     else { sortCol = col; sortDir = 'asc'; }
@@ -735,21 +800,23 @@
   function sortApply() {
     filteredRows.sort((a, b) => {
       let va = a[sortCol], vb = b[sortCol];
-      if (va == null) va = sortDir === 'asc' ? Infinity : -Infinity;
-      if (vb == null) vb = sortDir === 'asc' ? Infinity : -Infinity;
-      const numA = parseFloat(va), numB = parseFloat(vb);
-      if (!isNaN(numA) && !isNaN(numB)) return sortDir === 'asc' ? numA - numB : numB - numA;
-      const sa = String(va).toLowerCase(), sb = String(vb).toLowerCase();
-      return sortDir === 'asc' ? (sa < sb ? -1 : sa > sb ? 1 : 0) : (sb < sa ? -1 : sb > sa ? 1 : 0);
+      if (va == null) va = sortDir === 'asc' ?  Infinity : -Infinity;
+      if (vb == null) vb = sortDir === 'asc' ?  Infinity : -Infinity;
+      const na = parseFloat(va), nb = parseFloat(vb);
+      if (!isNaN(na) && !isNaN(nb)) return sortDir === 'asc' ? na - nb : nb - na;
+      const sa = String(va).toLowerCase(), sb2 = String(vb).toLowerCase();
+      return sortDir === 'asc' ? (sa < sb2 ? -1 : sa > sb2 ? 1 : 0) : (sb2 < sa ? -1 : sb2 > sa ? 1 : 0);
     });
   }
 
-  /* ── RENDER ────────────────────────────────────── */
-  const COL_IDX = { banker:0, client_code:1, client_name:2, conta_btg:3, classe:4, nome:5, codigo:6, emissor:7, indexador:8, taxa:9, quantidade:10, vencimento:11, valor_bruto:12, valor_liquido:13 };
+  /* ── RENDER ─────────────────────────────────── */
+  const COL_IDX = {
+    banker:0, client_code:1, client_name:2, conta_btg:3, classe:4,
+    nome:5, codigo:6, emissor:7, indexador:8, taxa:9,
+    quantidade:10, vencimento:11, valor_bruto:12, valor_liquido:13
+  };
 
   function render() {
-    const tbody = document.getElementById('tbl-body');
-
     if (filteredRows.length === 0) {
       document.getElementById('data-table').style.display = 'none';
       document.getElementById('export-btn').style.display = 'none';
@@ -758,12 +825,12 @@
       return;
     }
 
-    document.getElementById('tbl-state').style.display    = 'none';
-    document.getElementById('data-table').style.display   = 'table';
-    document.getElementById('export-btn').style.display   = 'inline-flex';
-    document.getElementById('tbl-count').textContent      = ` — ${filteredRows.length.toLocaleString('pt-BR')} linhas`;
+    document.getElementById('tbl-state').style.display  = 'none';
+    document.getElementById('data-table').style.display = 'table';
+    document.getElementById('export-btn').style.display = 'inline-flex';
+    document.getElementById('tbl-count').textContent    = ` — ${filteredRows.length.toLocaleString('pt-BR')} linhas`;
 
-    tbody.innerHTML = filteredRows.map(p => `
+    document.getElementById('tbl-body').innerHTML = filteredRows.map(p => `
       <tr>
         <td><span class="badge">${x(p.banker)}</span></td>
         <td>${x(p.client_code)}</td>
@@ -782,7 +849,6 @@
       </tr>
     `).join('');
 
-    // Sort indicators
     document.querySelectorAll('thead th').forEach((th, i) => {
       th.classList.remove('sort-asc', 'sort-desc');
       if (i === COL_IDX[sortCol]) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
@@ -790,18 +856,18 @@
   }
 
   function renderSummary() {
-    const uniqueAccounts = new Set(filteredRows.map(p => p.conta_btg)).size;
-    const totalAum = filteredRows.reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0);
-    document.getElementById('s-clients').textContent = uniqueAccounts.toLocaleString('pt-BR');
+    const uniq  = new Set(filteredRows.map(p => p.conta_btg)).size;
+    const total = filteredRows.reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0);
+    document.getElementById('s-clients').textContent = uniq.toLocaleString('pt-BR');
     document.getElementById('s-rows').textContent    = filteredRows.length.toLocaleString('pt-BR');
-    document.getElementById('s-aum').textContent     = fmtBRL(totalAum);
+    document.getElementById('s-aum').textContent     = fmtBRL(total);
   }
 
   function clearSummary() {
     ['s-clients','s-rows','s-aum'].forEach(id => document.getElementById(id).textContent = '—');
   }
 
-  /* ── STATE HELPERS ─────────────────────────────── */
+  /* ── STATE HELPERS ──────────────────────────── */
   function setStateLoading() {
     document.getElementById('data-table').style.display = 'none';
     document.getElementById('export-btn').style.display = 'none';
@@ -834,31 +900,27 @@
     btn.disabled    = on;
   }
 
-  /* ── CSV EXPORT ────────────────────────────────── */
+  /* ── CSV EXPORT ─────────────────────────────── */
   function exportCSV() {
-    const HEADERS = ['Banker','Cód. Cliente','Cliente','Conta BTG','Classe','Ativo','Cód. Ativo','Emissor','Indexador','Taxa (%)','Quantidade','Vencimento','Valor Bruto (R$)','Valor Líquido (R$)'];
+    const H = ['Banker','Cód. Cliente','Cliente','Conta BTG','Classe','Ativo',
+               'Cód. Ativo','Emissor','Indexador','Taxa (%)','Quantidade',
+               'Vencimento','Valor Bruto (R$)','Valor Líquido (R$)'];
     const rows = filteredRows.map(p => [
       p.banker, p.client_code, p.client_name, p.conta_btg,
       p.classe, p.nome, p.codigo, p.emissor, p.indexador,
       csvNum(p.taxa), csvNum(p.quantidade), p.vencimento || '',
       csvNum(p.valor_bruto), csvNum(p.valor_liquido)
     ]);
-
-    const csv = [HEADERS, ...rows]
-      .map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';'))
-      .join('\r\n');
-
+    const csv  = [H, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(';')).join('\r\n');
     const date = document.getElementById('f-date').value || 'sem-data';
     const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
     const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = `btg_posicoes_${date}.csv`;
+    const a    = Object.assign(document.createElement('a'), { href: url, download: `btg_posicoes_${date}.csv` });
     a.click();
     URL.revokeObjectURL(url);
   }
 
-  /* ── FORMATTERS ────────────────────────────────── */
+  /* ── FORMATTERS ─────────────────────────────── */
   function x(v) {
     if (v == null || v === '') return '<span class="td-muted">—</span>';
     return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -884,7 +946,7 @@
 
   function fmtDate(v) {
     if (!v) return '<span class="td-muted">—</span>';
-    const [y, m, d] = String(v).split('-');
+    const [y,m,d] = String(v).split('-');
     return (y && m && d) ? `${d}/${m}/${y}` : v;
   }
 
@@ -893,12 +955,10 @@
     return isNaN(n) ? '' : String(n).replace('.', ',');
   }
 
-  /* ── UTILS ─────────────────────────────────────── */
-  function todayISO() { return new Date().toISOString().split('T')[0]; }
-
+  /* ── UTILS ──────────────────────────────────── */
   function addOption(sel, value, label) {
     const o = document.createElement('option');
-    o.value = value;
+    o.value       = value;
     o.textContent = label;
     sel.appendChild(o);
   }
