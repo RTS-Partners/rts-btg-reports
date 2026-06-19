@@ -15,7 +15,6 @@
       --primary:      #C4A35A;
       --primary-hover:#D4B36A;
       --accent:       #C4A35A;
-      --accent-hover: #D4B36A;
       --text:         #E8E6E0;
       --text-muted:   #7A7773;
       --green:        #2D6A4F;
@@ -34,319 +33,213 @@
       font-size: 14px;
     }
 
-    /* ── LOGIN ─────────────────────────────────── */
+    /* ── LOGIN ──────────────────────────────────────── */
     #login-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 1rem;
-      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 1rem; background: var(--bg);
     }
-
     .login-card {
-      background: var(--surface);
-      border-radius: 10px;
-      box-shadow: var(--shadow-lg);
-      padding: 2.5rem 2.25rem;
-      width: 100%;
-      max-width: 390px;
-      border: 1px solid var(--border);
+      background: var(--surface); border-radius: 10px;
+      box-shadow: var(--shadow-lg); padding: 2.5rem 2.25rem;
+      width: 100%; max-width: 390px; border: 1px solid var(--border);
     }
-
-    .login-logo {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
+    .login-logo { text-align: center; margin-bottom: 2rem; }
     .login-logo svg { display: block; margin: 0 auto; }
     .login-logo svg path { fill: var(--text); }
-
     .login-logo-sub {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 0.75rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
     }
-
     .form-group { margin-bottom: 1rem; }
-
     label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-      color: var(--text);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      display: block; font-size: 0.78rem; font-weight: 700;
+      margin-bottom: 0.35rem; color: var(--text);
+      letter-spacing: 0.04em; text-transform: uppercase;
     }
-
     input, select {
-      width: 100%;
-      padding: 0.6rem 0.75rem;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 0.875rem;
-      color: var(--text);
-      background: var(--surface);
+      width: 100%; padding: 0.6rem 0.75rem;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-size: 0.875rem; color: var(--text); background: var(--surface);
       transition: border-color 0.15s, box-shadow 0.15s;
-      outline: none;
-      font-family: inherit;
+      outline: none; font-family: inherit;
     }
-
     input:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(196,163,90,.15);
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(196,163,90,.15);
     }
-
     select option { background: var(--surface); color: var(--text); }
-
     ::-webkit-calendar-picker-indicator { filter: invert(0.85); }
-
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      padding: 0.625rem 1.25rem;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 0.875rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.08s;
-      font-family: inherit;
-      white-space: nowrap;
-      letter-spacing: 0.02em;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.4rem; padding: 0.625rem 1.25rem; border: none;
+      border-radius: var(--radius); font-size: 0.875rem; font-weight: 700;
+      cursor: pointer; transition: background 0.15s, transform 0.08s;
+      font-family: inherit; white-space: nowrap; letter-spacing: 0.02em;
     }
-
     .btn:active  { transform: scale(0.97); }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-
     .btn-primary { background: var(--primary); color: #111110; }
     .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
-
     .btn-secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
     .btn-secondary:hover:not(:disabled) { background: var(--bg); }
-
-    .btn-success { background: var(--green); color: #fff; }
-    .btn-success:hover:not(:disabled) { background: var(--green-hover); }
-
     .btn-full { width: 100%; }
-
     .error-box {
-      color: var(--red);
-      font-size: 0.8rem;
-      padding: 0.55rem 0.75rem;
-      background: rgba(224,85,85,.1);
-      border-radius: var(--radius);
-      border: 1px solid rgba(224,85,85,.2);
-      margin-bottom: 0.9rem;
-      display: none;
+      color: var(--red); font-size: 0.8rem; padding: 0.55rem 0.75rem;
+      background: rgba(224,85,85,.1); border-radius: var(--radius);
+      border: 1px solid rgba(224,85,85,.2); margin-bottom: 0.9rem; display: none;
     }
-
     .divider {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin: 1.1rem 0;
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      display: flex; align-items: center; gap: 0.75rem; margin: 1.1rem 0;
+      color: var(--text-muted); font-size: 0.75rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
     }
     .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
+      content: ''; flex: 1; height: 1px; background: var(--border);
     }
-
     .btn-google {
-      background: var(--surface);
-      color: var(--text);
-      border: 1.5px solid var(--border);
-      font-weight: 600;
+      background: var(--surface); color: var(--text);
+      border: 1.5px solid var(--border); font-weight: 600;
     }
     .btn-google:hover:not(:disabled) { background: var(--bg); }
 
-    /* ── APP ───────────────────────────────────── */
+    /* ── APP ────────────────────────────────────────── */
     #app-screen { display: none; }
-
     .header {
-      background: #1A1A1A;
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
+      background: #1A1A1A; color: #fff;
+      padding: 0.75rem 1.5rem; display: flex; align-items: center;
       justify-content: space-between;
       box-shadow: 0 2px 10px rgba(0,0,0,.4);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
     }
-
     .header-left { display: flex; align-items: center; gap: 1rem; }
     .header-logo svg { display: block; }
     .header-sep { width: 1px; height: 28px; background: rgba(255,255,255,.2); }
     .header-page { font-size: 0.8rem; color: rgba(255,255,255,.65); letter-spacing: 0.04em; }
-
     .header-right { display: flex; align-items: center; gap: 0.75rem; }
     .header-user  { font-size: 0.75rem; color: rgba(255,255,255,.55); }
-
     .btn-logout {
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.08); color: rgba(255,255,255,.85);
       border: 1px solid rgba(255,255,255,.18);
-      padding: 0.35rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 600;
+      padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 600;
     }
     .btn-logout:hover { background: rgba(255,255,255,.16); }
 
     .main { padding: 1.5rem; max-width: 1760px; margin: 0 auto; }
 
-    /* ── CARDS ─────────────────────────────────── */
+    /* ── CARDS ──────────────────────────────────────── */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
     }
-
     .filters-card { padding: 1.25rem; margin-bottom: 1.25rem; }
-
     .card-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      margin-bottom: 1rem;
+      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 1rem;
     }
-
     .filters-grid {
-      display: grid;
-      grid-template-columns: 170px 160px 1fr auto;
-      gap: 1rem;
-      align-items: end;
+      display: grid; grid-template-columns: 170px 160px 1fr auto;
+      gap: 1rem; align-items: end;
     }
-
     .filters-actions { display: flex; gap: 0.5rem; }
 
-    /* ── SUMMARY ───────────────────────────────── */
+    /* ── SUMMARY ────────────────────────────────────── */
     .summary-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.25rem;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 1.25rem;
     }
-
     .summary-card { padding: 1.1rem 1.35rem; }
-
     .summary-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      margin-bottom: 0.45rem;
+      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 0.45rem;
     }
-
     .summary-value { font-size: 1.45rem; font-weight: 800; color: var(--primary); }
     .summary-sub   { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
 
-    /* ── TABLE ─────────────────────────────────── */
-    .table-card { overflow: hidden; margin-bottom: 1.5rem; }
-
-    .table-head {
-      padding: 0.85rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* ── TABS ───────────────────────────────────────── */
+    .tab-bar {
+      display: flex; border-bottom: 1px solid var(--border);
+      margin-bottom: 1.25rem; gap: 0;
     }
+    .tab-btn {
+      padding: 0.65rem 1.2rem; background: none; border: none;
+      border-bottom: 2px solid transparent; color: var(--text-muted);
+      font-weight: 600; font-size: 0.8rem; cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      letter-spacing: 0.03em; margin-bottom: -1px; font-family: inherit;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
+    .tab-view { display: none; }
+    .tab-view.active { display: block; }
+
+    /* ── TABLE ──────────────────────────────────────── */
+    .table-card { overflow: hidden; margin-bottom: 1.5rem; }
+    .table-head {
+      padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
     .table-title { font-size: 0.875rem; font-weight: 700; }
     .table-count { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; margin-left: 0.4rem; }
-
     .table-wrapper { overflow-x: auto; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
-
+    table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; table-layout: auto; }
     thead th {
-      background: #242220;
-      padding: 0.6rem 0.875rem;
-      text-align: left;
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-      position: sticky;
-      top: 0;
+      background: #242220; padding: 0.6rem 0.875rem; text-align: left;
+      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border); white-space: nowrap;
+      cursor: pointer; user-select: none;
       transition: background 0.1s, color 0.1s;
     }
-
-    thead th:hover { background: #2E2B28; color: var(--text); }
+    thead th.no-sort { cursor: default; }
+    thead th:hover:not(.no-sort) { background: #2E2B28; color: var(--text); }
     thead th.sort-asc::after  { content: ' ↑'; opacity: 0.6; }
     thead th.sort-desc::after { content: ' ↓'; opacity: 0.6; }
-
     tbody tr { border-bottom: 1px solid var(--border); transition: background 0.08s; }
     tbody tr:hover { background: #252320; }
-
-    tbody td { padding: 0.575rem 0.875rem; color: var(--text); white-space: nowrap; }
-
+    tbody td { padding: 0.55rem 0.875rem; color: var(--text); white-space: nowrap; }
     .td-right { text-align: right; font-variant-numeric: tabular-nums; }
     .td-muted { color: var(--text-muted); }
     .td-mono  { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.78rem; }
-
     .badge {
-      display: inline-block;
-      padding: 0.18rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: rgba(196,163,90,.18);
-      color: #C4A35A;
-      letter-spacing: 0.03em;
+      display: inline-block; padding: 0.18rem 0.5rem; border-radius: 4px;
+      font-size: 0.7rem; font-weight: 700;
+      background: rgba(196,163,90,.18); color: #C4A35A; letter-spacing: 0.03em;
     }
 
-    /* ── STATES ────────────────────────────────── */
+    /* ── BREAKDOWN BAR ──────────────────────────────── */
+    .bar-col { min-width: 110px; }
+    .bar-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    .bar-track {
+      flex: 1; height: 5px; background: var(--border);
+      border-radius: 3px; overflow: hidden; min-width: 60px;
+    }
+    .bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+    .bar-fill.bar-short  { background: #4CAF80; }
+    .bar-fill.bar-medium { background: #C4A35A; }
+    .bar-fill.bar-long   { background: #E07A35; }
+    .bar-pct { font-size: 0.75rem; color: var(--text-muted); min-width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* ── STATES ─────────────────────────────────────── */
     .state-box {
-      padding: 3.5rem 1rem;
-      text-align: center;
-      color: var(--text-muted);
+      padding: 3.5rem 1rem; text-align: center; color: var(--text-muted);
     }
-
     .state-icon { font-size: 2.25rem; margin-bottom: 0.7rem; line-height: 1; }
     .state-msg  { font-size: 0.875rem; }
     .state-msg strong { color: var(--text); }
-
     .spinner {
-      width: 28px; height: 28px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.65s linear infinite;
-      margin: 0 auto 0.75rem;
+      width: 28px; height: 28px; border: 3px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.65s linear infinite; margin: 0 auto 0.75rem;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── RESPONSIVE ────────────────────────────── */
+    /* ── RESPONSIVE ─────────────────────────────────── */
     @media (max-width: 900px) {
       .filters-grid { grid-template-columns: 1fr 1fr; }
       .filters-grid > *:last-child { grid-column: 1 / -1; }
       .summary-row { grid-template-columns: 1fr 1fr; }
       .summary-row > *:last-child { grid-column: 1 / -1; }
     }
-
     @media (max-width: 600px) {
       .header { padding: 0.65rem 1rem; }
       .header-page { display: none; }
@@ -361,9 +254,7 @@
 <!-- ════════ LOGIN ════════ -->
 <div id="login-screen">
   <div class="login-card">
-
     <div class="login-logo">
-      <!-- RTS Partners full logo from rtspartners.com.br -->
       <svg width="210" height="108" viewBox="0 0 696 359" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#lc-full)">
           <path d="M453.583 147.455C455.808 147.455 457.629 147.286 459.045 146.949C460.528 146.545 461.708 146.039 462.585 145.432C463.461 144.758 464.068 143.982 464.405 143.106C464.743 142.229 464.911 141.251 464.911 140.172C464.911 137.88 463.832 135.992 461.674 134.508C459.517 132.957 455.808 131.305 450.548 129.552C448.256 128.743 445.963 127.832 443.67 126.821C441.378 125.742 439.321 124.427 437.5 122.876C435.68 121.258 434.196 119.336 433.05 117.111C431.903 114.818 431.33 112.053 431.33 108.817C431.33 105.58 431.937 102.68 433.151 100.118C434.365 97.4881 436.084 95.2629 438.309 93.4422C440.535 91.6216 443.232 90.2392 446.401 89.2952C449.571 88.2837 453.144 87.778 457.123 87.778C461.843 87.778 465.923 88.2837 469.362 89.2952C472.801 90.3066 475.633 91.4193 477.858 92.633L473.306 105.074C471.351 104.063 469.159 103.186 466.732 102.444C464.372 101.635 461.506 101.231 458.134 101.231C454.358 101.231 451.627 101.77 449.941 102.849C448.323 103.86 447.514 105.445 447.514 107.603C447.514 108.884 447.817 109.963 448.424 110.84C449.031 111.716 449.874 112.525 450.953 113.267C452.099 113.941 453.38 114.582 454.796 115.189C456.28 115.728 457.898 116.302 459.652 116.908C463.293 118.257 466.462 119.606 469.159 120.954C471.857 122.236 474.082 123.753 475.835 125.506C477.656 127.259 479.004 129.316 479.881 131.676C480.758 134.036 481.196 136.902 481.196 140.274C481.196 146.814 478.903 151.905 474.318 155.547C469.733 159.121 462.821 160.908 453.583 160.908C450.481 160.908 447.682 160.705 445.187 160.301C442.692 159.964 440.467 159.525 438.512 158.986C436.624 158.446 434.972 157.873 433.555 157.266C432.207 156.659 431.06 156.086 430.116 155.547L434.567 143.005C436.657 144.151 439.22 145.196 442.254 146.14C445.356 147.017 449.132 147.455 453.583 147.455Z" fill="#1A1A1A"/>
@@ -399,9 +290,7 @@
     </div>
 
     <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">Entrar</button>
-
     <div class="divider">ou</div>
-
     <button class="btn btn-google btn-full" id="google-btn" onclick="doGoogleLogin()">
       <svg width="17" height="17" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -416,10 +305,8 @@
 
 <!-- ════════ APP ════════ -->
 <div id="app-screen">
-
   <div class="header">
     <div class="header-left">
-      <!-- RTS logo white -->
       <div class="header-logo">
         <svg width="90" height="46" viewBox="0 0 696 359" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#hc)">
@@ -454,15 +341,11 @@
         </div>
         <div class="form-group" style="margin:0">
           <label for="f-banker">Banker</label>
-          <select id="f-banker">
-            <option value="">Todos</option>
-          </select>
+          <select id="f-banker"><option value="">Todos</option></select>
         </div>
         <div class="form-group" style="margin:0">
           <label for="f-client">Cliente</label>
-          <select id="f-client">
-            <option value="">Todos</option>
-          </select>
+          <select id="f-client"><option value="">Todos</option></select>
         </div>
         <div class="form-group" style="margin:0">
           <label style="visibility:hidden">.</label>
@@ -493,45 +376,133 @@
       </div>
     </div>
 
-    <!-- Table -->
-    <div class="card table-card">
-      <div class="table-head">
-        <div>
-          <span class="table-title">Posições BTG</span>
-          <span class="table-count" id="tbl-count"></span>
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('positions')">Posições</button>
+      <button class="tab-btn" onclick="switchTab('by-class')">Por Classe</button>
+      <button class="tab-btn" onclick="switchTab('by-banker')">Por Banker</button>
+      <button class="tab-btn" onclick="switchTab('maturities')">Vencimentos</button>
+    </div>
+
+    <!-- ── View: Posições ─────────────────────── -->
+    <div id="view-positions" class="tab-view active">
+      <div class="card table-card">
+        <div class="table-head">
+          <div>
+            <span class="table-title">Posições BTG</span>
+            <span class="table-count" id="tbl-count"></span>
+          </div>
         </div>
-        <button class="btn btn-success" id="export-btn" onclick="exportCSV()" style="display:none">
-          ↓ Exportar CSV
-        </button>
+        <div class="table-wrapper">
+          <div id="tbl-state" class="state-box">
+            <div class="state-icon">📋</div>
+            <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar as posições.</div>
+          </div>
+          <table id="data-table" style="display:none">
+            <thead>
+              <tr>
+                <th onclick="sortBy('banker')">Banker</th>
+                <th onclick="sortBy('client_code')">Cód. Cliente</th>
+                <th onclick="sortBy('conta_btg')">Conta BTG</th>
+                <th onclick="sortBy('classe')">Classe</th>
+                <th onclick="sortBy('nome')">Ativo</th>
+                <th onclick="sortBy('codigo')">Cód. Ativo</th>
+                <th onclick="sortBy('emissor')">Emissor</th>
+                <th onclick="sortBy('indexador')">Indexador</th>
+                <th onclick="sortBy('taxa')" style="text-align:right">Taxa</th>
+                <th onclick="sortBy('quantidade')" style="text-align:right">Qtd</th>
+                <th onclick="sortBy('vencimento')">Vencimento</th>
+                <th onclick="sortBy('valor_bruto')" style="text-align:right">Valor Bruto</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-body"></tbody>
+          </table>
+        </div>
       </div>
+    </div>
 
-      <div class="table-wrapper">
-        <div id="tbl-state" class="state-box">
-          <div class="state-icon">📋</div>
-          <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar as posições.</div>
+    <!-- ── View: Por Classe ───────────────────── -->
+    <div id="view-by-class" class="tab-view">
+      <div class="card table-card">
+        <div class="table-head">
+          <span class="table-title">Alocação por Classe de Ativo</span>
         </div>
+        <div class="table-wrapper">
+          <div id="cls-state" class="state-box">
+            <div class="state-icon">📊</div>
+            <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
+          </div>
+          <table id="cls-table" style="display:none">
+            <thead>
+              <tr>
+                <th class="no-sort" style="width:2rem">#</th>
+                <th class="no-sort">Classe</th>
+                <th class="no-sort" style="text-align:right">AuM Bruto</th>
+                <th class="no-sort" style="text-align:right">% do Total</th>
+                <th class="no-sort">Distribuição</th>
+                <th class="no-sort" style="text-align:right">Contas</th>
+                <th class="no-sort" style="text-align:right">Ativos</th>
+              </tr>
+            </thead>
+            <tbody id="cls-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-        <table id="data-table" style="display:none">
-          <thead>
-            <tr>
-              <th onclick="sortBy('banker')">Banker</th>
-              <th onclick="sortBy('client_code')">Cód. Cliente</th>
-              <th onclick="sortBy('client_name')">Cliente</th>
-              <th onclick="sortBy('conta_btg')">Conta BTG</th>
-              <th onclick="sortBy('classe')">Classe</th>
-              <th onclick="sortBy('nome')">Ativo</th>
-              <th onclick="sortBy('codigo')">Cód. Ativo</th>
-              <th onclick="sortBy('emissor')">Emissor</th>
-              <th onclick="sortBy('indexador')">Indexador</th>
-              <th onclick="sortBy('taxa')" style="text-align:right">Taxa</th>
-              <th onclick="sortBy('quantidade')" style="text-align:right">Quantidade</th>
-              <th onclick="sortBy('vencimento')">Vencimento</th>
-              <th onclick="sortBy('valor_bruto')" style="text-align:right">Valor Bruto</th>
-              <th onclick="sortBy('valor_liquido')" style="text-align:right">Valor Líquido</th>
-            </tr>
-          </thead>
-          <tbody id="tbl-body"></tbody>
-        </table>
+    <!-- ── View: Por Banker ───────────────────── -->
+    <div id="view-by-banker" class="tab-view">
+      <div class="card table-card">
+        <div class="table-head">
+          <span class="table-title">Desempenho por Banker</span>
+        </div>
+        <div class="table-wrapper">
+          <div id="bnk-state" class="state-box">
+            <div class="state-icon">👤</div>
+            <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
+          </div>
+          <table id="bnk-table" style="display:none">
+            <thead>
+              <tr>
+                <th class="no-sort" style="width:2rem">#</th>
+                <th class="no-sort">Banker</th>
+                <th class="no-sort" style="text-align:right">Contas</th>
+                <th class="no-sort" style="text-align:right">Ativos</th>
+                <th class="no-sort" style="text-align:right">AuM Total</th>
+                <th class="no-sort" style="text-align:right">AuM Médio/Conta</th>
+                <th class="no-sort">Participação</th>
+              </tr>
+            </thead>
+            <tbody id="bnk-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── View: Vencimentos ─────────────────── -->
+    <div id="view-maturities" class="tab-view">
+      <div class="card table-card">
+        <div class="table-head">
+          <span class="table-title">Ladder de Vencimentos</span>
+        </div>
+        <div class="table-wrapper">
+          <div id="mat-state" class="state-box">
+            <div class="state-icon">📅</div>
+            <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
+          </div>
+          <table id="mat-table" style="display:none">
+            <thead>
+              <tr>
+                <th class="no-sort">Prazo</th>
+                <th class="no-sort" style="text-align:right">Ativos</th>
+                <th class="no-sort" style="text-align:right">AuM Bruto</th>
+                <th class="no-sort" style="text-align:right">% do Total</th>
+                <th class="no-sort">Perfil</th>
+              </tr>
+            </thead>
+            <tbody id="mat-body"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -539,29 +510,31 @@
 </div>
 
 <script>
-  /* ── CONFIG ─────────────────────────────────── */
   const SB_URL = 'https://gmvraqrvovvpuxmqgkaz.supabase.co';
   const SB_KEY = 'sb_publishable_fLL0TQYYCP7frJIqf-S49g_3Q2LNDUI';
 
-  /* ── STATE ──────────────────────────────────── */
   let sb;
   let appReady     = false;
-  let clientMap    = {};   // conta_btg (trimmed) → {nome, banker, code, client_code, id, conta}
-  let allClients   = [];   // tb_clientes rows with conta_btg not null
-  let holidays     = new Set(); // YYYY-MM-DD strings
+  let clientMap    = {};
+  let allClients   = [];
+  let holidays     = new Set();
   let allPositions = [];
   let filteredRows = [];
-  let sortCol = 'valor_bruto';
-  let sortDir = 'desc';
+  let sortCol      = 'valor_bruto';
+  let sortDir      = 'desc';
+  let activeTab    = 'positions';
 
-  /* ── INIT ───────────────────────────────────── */
+  const COL_IDX = {
+    banker:0, client_code:1, conta_btg:2, classe:3,
+    nome:4, codigo:5, emissor:6, indexador:7, taxa:8,
+    quantidade:9, vencimento:10, valor_bruto:11
+  };
+
+  /* ── INIT ─────────────────────────────────── */
   window.addEventListener('DOMContentLoaded', async () => {
     sb = supabase.createClient(SB_URL, SB_KEY);
-
-    // Fetch holidays before login (RLS disabled on tb_feriados)
     await loadHolidays();
 
-    // Handle OAuth redirects and session state changes
     sb.auth.onAuthStateChange(async (event, session) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session && !appReady) {
         appReady = true;
@@ -569,22 +542,16 @@
       }
     });
 
-    // Immediate session check (returning users / existing sessions)
     const { data: { session } } = await sb.auth.getSession();
-    if (session && !appReady) {
-      appReady = true;
-      await enterApp(session.user);
-    }
+    if (session && !appReady) { appReady = true; await enterApp(session.user); }
 
-    // Enter key triggers login
     document.getElementById('inp-password').addEventListener('keydown', e => {
       if (e.key === 'Enter') doLogin();
     });
-
     document.getElementById('f-banker').addEventListener('change', rebuildClientDropdown);
   });
 
-  /* ── HOLIDAYS ───────────────────────────────── */
+  /* ── HOLIDAYS ─────────────────────────────── */
   async function loadHolidays() {
     try {
       const { data } = await sb.from('tb_feriados').select('data');
@@ -594,108 +561,82 @@
 
   function lastWorkingDay() {
     const d = new Date();
-    d.setHours(12, 0, 0, 0); // avoid DST issues
-    d.setDate(d.getDate() - 1); // start from yesterday
+    d.setHours(12, 0, 0, 0);
+    d.setDate(d.getDate() - 1);
     for (let i = 0; i < 30; i++) {
-      const dow = d.getDay();
-      const iso = d.toISOString().split('T')[0];
+      const dow = d.getDay(), iso = d.toISOString().split('T')[0];
       if (dow !== 0 && dow !== 6 && !holidays.has(iso)) return iso;
       d.setDate(d.getDate() - 1);
     }
     return new Date(Date.now() - 86400000).toISOString().split('T')[0];
   }
 
-  /* ── AUTH ───────────────────────────────────── */
+  /* ── AUTH ─────────────────────────────────── */
   async function doLogin() {
-    const email    = document.getElementById('inp-email').value.trim();
+    const email = document.getElementById('inp-email').value.trim();
     const password = document.getElementById('inp-password').value;
-    const errEl    = document.getElementById('login-error');
-    const btn      = document.getElementById('login-btn');
-
+    const errEl = document.getElementById('login-error');
+    const btn = document.getElementById('login-btn');
     errEl.style.display = 'none';
-    btn.textContent = 'Entrando…';
-    btn.disabled    = true;
+    btn.textContent = 'Entrando…'; btn.disabled = true;
 
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
     if (error) {
-      errEl.textContent   = 'E-mail ou senha incorretos. Tente novamente.';
+      errEl.textContent = 'E-mail ou senha incorretos. Tente novamente.';
       errEl.style.display = 'block';
-      btn.textContent = 'Entrar';
-      btn.disabled    = false;
+      btn.textContent = 'Entrar'; btn.disabled = false;
       return;
     }
-
-    if (!appReady) {
-      appReady = true;
-      await enterApp(data.user);
-    }
+    if (!appReady) { appReady = true; await enterApp(data.user); }
   }
 
   async function doGoogleLogin() {
     const errEl = document.getElementById('login-error');
     const btn   = document.getElementById('google-btn');
     errEl.style.display = 'none';
-    btn.disabled    = true;
-    btn.textContent = 'Redirecionando…';
-
+    btn.disabled = true; btn.textContent = 'Redirecionando…';
     const redirectTo = window.location.href.split('#')[0].split('?')[0];
     const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
-
     if (error) {
-      errEl.textContent   = 'Erro ao iniciar login com Google: ' + error.message;
+      errEl.textContent = 'Erro ao iniciar login com Google: ' + error.message;
       errEl.style.display = 'block';
       btn.disabled = false;
       btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Entrar com Google`;
     }
   }
 
-  async function doLogout() {
-    await sb.auth.signOut();
-    location.reload();
-  }
+  async function doLogout() { await sb.auth.signOut(); location.reload(); }
 
-  /* ── ENTER APP ──────────────────────────────── */
+  /* ── ENTER APP ────────────────────────────── */
   async function enterApp(user) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-screen').style.display   = 'block';
     document.getElementById('hdr-email').textContent      = user.email;
-
-    // Set default date to last working day
     document.getElementById('f-date').value = lastWorkingDay();
-
     await loadClients();
-
-    if (allClients.length === 0) {
-      // Show soft warning — filters will still work if positions load
-      console.warn('No clients loaded — check RLS policies for tb_clientes');
-    }
-
     buildBankerDropdown();
     rebuildClientDropdown();
   }
 
-  /* ── CLIENTS ────────────────────────────────── */
+  /* ── CLIENTS ──────────────────────────────── */
   async function loadClients() {
     const { data, error } = await sb
       .from('tb_clientes')
       .select('id, conta_btg, nome, banker, code, conta')
       .not('conta_btg', 'is', null);
-
     if (error) { console.error('loadClients error:', error); return; }
-
-    // Trim conta_btg values to remove stray \r\n
-    allClients = (data || []).map(c => ({ ...c, conta_btg: c.conta_btg ? c.conta_btg.trim() : null }))
-                             .filter(c => c.conta_btg);
-    clientMap  = {};
+    allClients = (data || [])
+      .map(c => ({ ...c, conta_btg: c.conta_btg ? c.conta_btg.trim() : null }))
+      .filter(c => c.conta_btg);
+    clientMap = {};
     allClients.forEach(c => {
       clientMap[c.conta_btg] = {
-        nome:        c.nome      || '',
-        banker:      c.banker    || '',
-        code:        c.code      || '',
+        nome:        c.nome   || '',
+        banker:      c.banker || '',
+        code:        c.code   || '',
         client_code: (c.banker && c.code) ? `${c.banker}-${c.code}` : '',
         id:          c.id,
-        conta:       c.conta     || ''
+        conta:       c.conta  || ''
       };
     });
   }
@@ -711,11 +652,8 @@
     const banker = document.getElementById('f-banker').value;
     const sel    = document.getElementById('f-client');
     const prev   = sel.value;
-
-    const rows = banker ? allClients.filter(c => c.banker === banker) : allClients;
-
-    // Sort by client code (banker-code), then by conta
-    const opts = rows
+    const rows   = banker ? allClients.filter(c => c.banker === banker) : allClients;
+    const opts   = rows
       .filter(c => c.conta_btg)
       .map(c => ({
         value:   c.conta_btg,
@@ -723,22 +661,36 @@
         sortKey: `${c.banker || ''}-${c.code || ''}-${c.conta || ''}`
       }))
       .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
-
     sel.innerHTML = '<option value="">Todos</option>';
     opts.forEach(o => addOption(sel, o.value, o.label));
-
     if (prev && opts.some(o => o.value === prev)) sel.value = prev;
     if (allPositions.length) applyClientFilter();
   }
 
-  /* ── POSITIONS ──────────────────────────────── */
+  /* ── TABS ─────────────────────────────────── */
+  function switchTab(name) {
+    activeTab = name;
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', ['positions','by-class','by-banker','maturities'][i] === name);
+    });
+    document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    if (filteredRows.length) renderTab(name);
+  }
+
+  function renderTab(name) {
+    if (name === 'positions') render();
+    else if (name === 'by-class') renderByClass();
+    else if (name === 'by-banker') renderByBanker();
+    else if (name === 'maturities') renderMaturities();
+  }
+
+  /* ── POSITIONS ────────────────────────────── */
   async function applyFilters() {
     const date = document.getElementById('f-date').value;
     if (!date) { alert('Selecione uma data para buscar as posições.'); return; }
-
     setSearching(true);
     setStateLoading();
-
     try {
       allPositions = await fetchPositions(date);
       applyClientFilter();
@@ -752,65 +704,58 @@
   async function fetchPositions(date) {
     const PAGE = 1000;
     let from = 0, all = [];
-
     while (true) {
       const { data, error } = await sb
         .from('tb_btg_position')
-        .select('conta_btg, data, classe, codigo, nome, emissor, quantidade, valor_bruto, valor_liquido, taxa, vencimento, indexador, titular')
+        .select('conta_btg, data, classe, codigo, nome, emissor, quantidade, valor_bruto, taxa, vencimento, indexador')
         .eq('data', date)
         .range(from, from + PAGE - 1);
-
       if (error) throw error;
       if (!data || data.length === 0) break;
       all = all.concat(data);
       if (data.length < PAGE) break;
       from += PAGE;
     }
-
     return all.map(p => {
       const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg;
       const ci  = clientMap[key] || {};
-      return {
-        ...p,
-        conta_btg:   key,
-        client_name: ci.nome        || p.titular || '',
-        banker:      ci.banker      || '',
-        client_code: ci.client_code || ''
-      };
+      return { ...p, conta_btg: key, banker: ci.banker || '', client_code: ci.client_code || '' };
     });
   }
 
   function applyClientFilter() {
     const banker   = document.getElementById('f-banker').value;
     const contaBtg = document.getElementById('f-client').value;
-
     filteredRows = allPositions.filter(p => {
+      if (!p.banker) return false;
       if (banker   && p.banker    !== banker)   return false;
       if (contaBtg && p.conta_btg !== contaBtg) return false;
       return true;
     });
-
     sortApply();
-    render();
     renderSummary();
+    renderTab(activeTab);
   }
 
   function clearFilters() {
     document.getElementById('f-date').value   = lastWorkingDay();
     document.getElementById('f-banker').value = '';
     rebuildClientDropdown();
-    allPositions = [];
-    filteredRows = [];
-    setStateEmpty();
+    allPositions = []; filteredRows = [];
     clearSummary();
+    setStateEmpty();
+    ['cls','bnk','mat'].forEach(p => {
+      document.getElementById(p + '-table').style.display = 'none';
+      document.getElementById(p + '-state').style.display = 'block';
+      document.getElementById(p + '-state').innerHTML = emptyPrompt();
+    });
   }
 
-  /* ── SORT ───────────────────────────────────── */
+  /* ── SORT ─────────────────────────────────── */
   function sortBy(col) {
     if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
     else { sortCol = col; sortDir = 'asc'; }
-    sortApply();
-    render();
+    sortApply(); render();
   }
 
   function sortApply() {
@@ -825,32 +770,22 @@
     });
   }
 
-  /* ── RENDER ─────────────────────────────────── */
-  const COL_IDX = {
-    banker:0, client_code:1, client_name:2, conta_btg:3, classe:4,
-    nome:5, codigo:6, emissor:7, indexador:8, taxa:9,
-    quantidade:10, vencimento:11, valor_bruto:12, valor_liquido:13
-  };
-
+  /* ── RENDER: POSITIONS ────────────────────── */
   function render() {
-    if (filteredRows.length === 0) {
+    if (!filteredRows.length) {
       document.getElementById('data-table').style.display = 'none';
-      document.getElementById('export-btn').style.display = 'none';
-      document.getElementById('tbl-count').textContent    = '';
+      document.getElementById('tbl-count').textContent = '';
       setStateNoResults();
       return;
     }
-
     document.getElementById('tbl-state').style.display  = 'none';
     document.getElementById('data-table').style.display = 'table';
-    document.getElementById('export-btn').style.display = 'inline-flex';
     document.getElementById('tbl-count').textContent    = ` — ${filteredRows.length.toLocaleString('pt-BR')} linhas`;
 
     document.getElementById('tbl-body').innerHTML = filteredRows.map(p => `
       <tr>
         <td><span class="badge">${x(p.banker)}</span></td>
         <td>${x(p.client_code)}</td>
-        <td>${x(p.client_name)}</td>
         <td class="td-muted td-mono">${x(p.conta_btg)}</td>
         <td>${x(p.classe)}</td>
         <td>${x(p.nome)}</td>
@@ -861,9 +796,7 @@
         <td class="td-right td-muted">${fmtQty(p.quantidade)}</td>
         <td class="td-muted">${fmtDate(p.vencimento)}</td>
         <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
-        <td class="td-right">${fmtBRL(p.valor_liquido)}</td>
-      </tr>
-    `).join('');
+      </tr>`).join('');
 
     document.querySelectorAll('thead th').forEach((th, i) => {
       th.classList.remove('sort-asc', 'sort-desc');
@@ -871,6 +804,107 @@
     });
   }
 
+  /* ── RENDER: BY CLASS ─────────────────────── */
+  function renderByClass() {
+    const map = {};
+    filteredRows.forEach(p => {
+      const k = p.classe || 'Outros';
+      if (!map[k]) map[k] = { aum: 0, ativos: 0, contas: new Set() };
+      map[k].aum += parseFloat(p.valor_bruto) || 0;
+      map[k].ativos++;
+      if (p.conta_btg) map[k].contas.add(p.conta_btg);
+    });
+    const total = Object.values(map).reduce((s, v) => s + v.aum, 0);
+    const rows  = Object.entries(map)
+      .map(([k, v]) => ({ classe: k, aum: v.aum, ativos: v.ativos, contas: v.contas.size, pct: total ? v.aum / total : 0 }))
+      .sort((a, b) => b.aum - a.aum);
+
+    document.getElementById('cls-state').style.display = 'none';
+    document.getElementById('cls-table').style.display = 'table';
+    document.getElementById('cls-body').innerHTML = rows.map((r, i) => `
+      <tr>
+        <td class="td-muted" style="font-size:0.75rem">${i + 1}</td>
+        <td><strong>${x(r.classe)}</strong></td>
+        <td class="td-right"><strong>${fmtBRL(r.aum)}</strong></td>
+        <td class="td-right td-muted">${(r.pct * 100).toFixed(1)}%</td>
+        <td class="bar-col"><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${(r.pct * 100).toFixed(1)}%"></div></div></div></td>
+        <td class="td-right td-muted">${r.contas.toLocaleString('pt-BR')}</td>
+        <td class="td-right td-muted">${r.ativos.toLocaleString('pt-BR')}</td>
+      </tr>`).join('');
+  }
+
+  /* ── RENDER: BY BANKER ────────────────────── */
+  function renderByBanker() {
+    const map = {};
+    filteredRows.forEach(p => {
+      const k = p.banker || '(sem banker)';
+      if (!map[k]) map[k] = { aum: 0, ativos: 0, contas: new Set() };
+      map[k].aum += parseFloat(p.valor_bruto) || 0;
+      map[k].ativos++;
+      if (p.conta_btg) map[k].contas.add(p.conta_btg);
+    });
+    const total = Object.values(map).reduce((s, v) => s + v.aum, 0);
+    const rows  = Object.entries(map)
+      .map(([k, v]) => ({ banker: k, aum: v.aum, ativos: v.ativos, contas: v.contas.size, pct: total ? v.aum / total : 0 }))
+      .sort((a, b) => b.aum - a.aum);
+
+    document.getElementById('bnk-state').style.display = 'none';
+    document.getElementById('bnk-table').style.display = 'table';
+    document.getElementById('bnk-body').innerHTML = rows.map((r, i) => `
+      <tr>
+        <td class="td-muted" style="font-size:0.75rem">${i + 1}</td>
+        <td><span class="badge">${x(r.banker)}</span></td>
+        <td class="td-right td-muted">${r.contas.toLocaleString('pt-BR')}</td>
+        <td class="td-right td-muted">${r.ativos.toLocaleString('pt-BR')}</td>
+        <td class="td-right"><strong>${fmtBRL(r.aum)}</strong></td>
+        <td class="td-right td-muted">${fmtBRL(r.contas ? r.aum / r.contas : 0)}</td>
+        <td class="bar-col"><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${(r.pct * 100).toFixed(1)}%"></div></div><span class="bar-pct">${(r.pct * 100).toFixed(1)}%</span></div></td>
+      </tr>`).join('');
+  }
+
+  /* ── RENDER: MATURITIES ───────────────────── */
+  function renderMaturities() {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const BUCKETS = [
+      { label: 'Sem vencimento', color: 'bar-medium', aum: 0, ativos: 0 },
+      { label: '≤ 30 dias',      color: 'bar-short',  aum: 0, ativos: 0, min: 0,    max: 30   },
+      { label: '31 – 90 dias',   color: 'bar-short',  aum: 0, ativos: 0, min: 31,   max: 90   },
+      { label: '91 – 180 dias',  color: 'bar-short',  aum: 0, ativos: 0, min: 91,   max: 180  },
+      { label: '181 dias – 1a',  color: 'bar-medium', aum: 0, ativos: 0, min: 181,  max: 365  },
+      { label: '1 – 2 anos',     color: 'bar-medium', aum: 0, ativos: 0, min: 366,  max: 730  },
+      { label: '2 – 5 anos',     color: 'bar-long',   aum: 0, ativos: 0, min: 731,  max: 1825 },
+      { label: '> 5 anos',       color: 'bar-long',   aum: 0, ativos: 0, min: 1826, max: null },
+    ];
+
+    filteredRows.forEach(p => {
+      const aum = parseFloat(p.valor_bruto) || 0;
+      if (!p.vencimento) { BUCKETS[0].aum += aum; BUCKETS[0].ativos++; return; }
+      const venc = new Date(p.vencimento + 'T12:00:00');
+      const days = Math.ceil((venc - today) / 86400000);
+      for (let i = 1; i < BUCKETS.length; i++) {
+        const b = BUCKETS[i];
+        if (days >= b.min && (b.max === null || days <= b.max)) {
+          b.aum += aum; b.ativos++; break;
+        }
+      }
+    });
+
+    const total = BUCKETS.reduce((s, b) => s + b.aum, 0);
+    document.getElementById('mat-state').style.display = 'none';
+    document.getElementById('mat-table').style.display = 'table';
+    document.getElementById('mat-body').innerHTML = BUCKETS.map(b => {
+      const pct = total ? b.aum / total : 0;
+      return `<tr>
+        <td><strong>${b.label}</strong></td>
+        <td class="td-right td-muted">${b.ativos.toLocaleString('pt-BR')}</td>
+        <td class="td-right"><strong>${fmtBRL(b.aum)}</strong></td>
+        <td class="td-right td-muted">${(pct * 100).toFixed(1)}%</td>
+        <td class="bar-col"><div class="bar-wrap"><div class="bar-track"><div class="bar-fill ${b.color}" style="width:${(pct * 100).toFixed(1)}%"></div></div><span class="bar-pct">${(pct * 100).toFixed(1)}%</span></div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  /* ── SUMMARY ──────────────────────────────── */
   function renderSummary() {
     const uniq  = new Set(filteredRows.map(p => p.conta_btg)).size;
     const total = filteredRows.reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0);
@@ -883,18 +917,22 @@
     ['s-clients','s-rows','s-aum'].forEach(id => document.getElementById(id).textContent = '—');
   }
 
-  /* ── STATE HELPERS ──────────────────────────── */
+  /* ── STATE HELPERS ────────────────────────── */
+  function emptyPrompt() {
+    return `<div class="state-icon">📋</div><div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>`;
+  }
+
   function setStateLoading() {
-    document.getElementById('data-table').style.display = 'none';
-    document.getElementById('export-btn').style.display = 'none';
-    document.getElementById('tbl-count').textContent    = '';
-    document.getElementById('tbl-state').style.display  = 'block';
+    ['data-table','tbl-count'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el.tagName === 'TABLE') el.style.display = 'none'; else el.textContent = '';
+    });
+    document.getElementById('tbl-state').style.display = 'block';
     document.getElementById('tbl-state').innerHTML = `<div class="spinner"></div><div class="state-msg">Carregando posições…</div>`;
   }
 
   function setStateEmpty() {
     document.getElementById('data-table').style.display = 'none';
-    document.getElementById('export-btn').style.display = 'none';
     document.getElementById('tbl-count').textContent    = '';
     document.getElementById('tbl-state').style.display  = 'block';
     document.getElementById('tbl-state').innerHTML = `<div class="state-icon">📋</div><div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar as posições.</div>`;
@@ -916,67 +954,34 @@
     btn.disabled    = on;
   }
 
-  /* ── CSV EXPORT ─────────────────────────────── */
-  function exportCSV() {
-    const H = ['Banker','Cód. Cliente','Cliente','Conta BTG','Classe','Ativo',
-               'Cód. Ativo','Emissor','Indexador','Taxa (%)','Quantidade',
-               'Vencimento','Valor Bruto (R$)','Valor Líquido (R$)'];
-    const rows = filteredRows.map(p => [
-      p.banker, p.client_code, p.client_name, p.conta_btg,
-      p.classe, p.nome, p.codigo, p.emissor, p.indexador,
-      csvNum(p.taxa), csvNum(p.quantidade), p.vencimento || '',
-      csvNum(p.valor_bruto), csvNum(p.valor_liquido)
-    ]);
-    const csv  = [H, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(';')).join('\r\n');
-    const date = document.getElementById('f-date').value || 'sem-data';
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const a    = Object.assign(document.createElement('a'), { href: url, download: `btg_posicoes_${date}.csv` });
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  /* ── FORMATTERS ─────────────────────────────── */
+  /* ── FORMATTERS ───────────────────────────── */
   function x(v) {
     if (v == null || v === '') return '<span class="td-muted">—</span>';
     return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
-
   function fmtBRL(v) {
     const n = parseFloat(v);
     if (isNaN(n)) return '<span class="td-muted">—</span>';
     return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2 });
   }
-
   function fmtQty(v) {
     const n = parseFloat(v);
     if (isNaN(n)) return '<span class="td-muted">—</span>';
     return n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:6 });
   }
-
   function fmtRate(v) {
     const n = parseFloat(v);
     if (isNaN(n)) return '<span class="td-muted">—</span>';
     return n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:4 }) + '%';
   }
-
   function fmtDate(v) {
     if (!v) return '<span class="td-muted">—</span>';
-    const [y,m,d] = String(v).split('-');
+    const [y, m, d] = String(v).split('-');
     return (y && m && d) ? `${d}/${m}/${y}` : v;
   }
-
-  function csvNum(v) {
-    const n = parseFloat(v);
-    return isNaN(n) ? '' : String(n).replace('.', ',');
-  }
-
-  /* ── UTILS ──────────────────────────────────── */
   function addOption(sel, value, label) {
     const o = document.createElement('option');
-    o.value       = value;
-    o.textContent = label;
-    sel.appendChild(o);
+    o.value = value; o.textContent = label; sel.appendChild(o);
   }
 </script>
 </body>
