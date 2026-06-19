@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -101,6 +101,7 @@
     .table-wrapper::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
     .table-wrapper::-webkit-scrollbar-corner { background: var(--bg); }
     table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; table-layout: auto; }
+    .subtotal-row td { background: #181716; border-top: 2px solid var(--border); font-size: 0.78rem; padding-top: 0.3rem; padding-bottom: 0.3rem; }
     thead th { background: #242220; padding: 0.6rem 0.875rem; text-align: left; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; transition: background 0.1s, color 0.1s; position: sticky; top: 0; z-index: 2; }
     thead th.no-sort { cursor: default; }
     thead th:hover:not(.no-sort) { background: #2E2B28; color: var(--text); }
@@ -302,6 +303,7 @@
                 <th onclick="sortBy('banker')">Banker</th>
                 <th onclick="sortBy('client_code')">Cód. Cliente</th>
                 <th onclick="sortBy('conta_btg')">Conta BTG</th>
+                <th onclick="sortBy('conta')">Conta</th>
                 <th onclick="sortBy('classe')">Classe</th>
                 <th onclick="sortBy('nome')">Ativo</th>
                 <th onclick="sortBy('codigo')">Cód. Ativo</th>
@@ -382,6 +384,7 @@
                 <th onclick="sortCaixa('banker')">Banker</th>
                 <th onclick="sortCaixa('client_code')">Cód. Cliente</th>
                 <th onclick="sortCaixa('conta_btg')">Conta BTG</th>
+                <th onclick="sortCaixa('conta')">Conta</th>
                 <th onclick="sortCaixa('classe')">Classe</th>
                 <th onclick="sortCaixa('nome')">Ativo</th>
                 <th onclick="sortCaixa('codigo')">Cód. Ativo</th>
@@ -421,11 +424,11 @@
   let clsChart = null, bnkChart = null, matChart = null;
 
   const COL_IDX = {
-    banker:0, client_code:1, conta_btg:2, classe:3,
-    nome:4, codigo:5, emissor:6, indexador:7, taxa:8,
-    vencimento:9, quantidade:10, valor_bruto:11
+    banker:0, client_code:1, conta_btg:2, conta:3, classe:4,
+    nome:5, codigo:6, emissor:7, indexador:8, taxa:9,
+    vencimento:10, quantidade:11, valor_bruto:12
   };
-  const COL_IDX_CAIXA = { banker:0, client_code:1, conta_btg:2, classe:3, nome:4, codigo:5, emissor:6, indexador:7, taxa:8, vencimento:9, quantidade:10, valor_bruto:11 };
+  const COL_IDX_CAIXA = { banker:0, client_code:1, conta_btg:2, conta:3, classe:4, nome:5, codigo:6, emissor:7, indexador:8, taxa:9, vencimento:10, quantidade:11, valor_bruto:12 };
 
   function classLabel(c) { return c === 'Liquidações Pendentes' ? 'Provisões' : (c || ''); }
 
@@ -549,7 +552,7 @@
       if (data.length < PAGE) break;
       from += PAGE;
     }
-    return all.map(p => { const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg; const ci = clientMap[key] || {}; return { ...p, conta_btg: key, banker: ci.banker||'', client_code: ci.client_code||'' }; });
+    return all.map(p => { const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg; const ci = clientMap[key] || {}; return { ...p, conta_btg: key, banker: ci.banker||'', client_code: ci.client_code||'', conta: ci.conta||'' }; });
   }
   function applyClientFilter() {
     const banker = document.getElementById('f-banker').value, contaBtg = document.getElementById('f-client').value;
@@ -583,14 +586,21 @@
     else { sortCol = col; sortDir = 'asc'; }
     sortApply(); render();
   }
+  const NO_VENC_CLASSES = new Set(['Fundo','Previdência','Caixa']);
+  function vencSort(p) { return NO_VENC_CLASSES.has(p.classe) ? '' : (p.vencimento || ''); }
+
   function sortApply() {
     if (sortCol === null) {
       filteredRows.sort((a, b) => {
         const cc = String(a.client_code||'').localeCompare(String(b.client_code||''));
         if (cc !== 0) return cc;
+        const co = String(a.conta||'').localeCompare(String(b.conta||''));
+        if (co !== 0) return co;
         const cl = String(a.classe||'').localeCompare(String(b.classe||''));
         if (cl !== 0) return cl;
-        return String(a.nome||'').localeCompare(String(b.nome||''));
+        const nm = String(a.nome||'').localeCompare(String(b.nome||''));
+        if (nm !== 0) return nm;
+        return vencSort(a).localeCompare(vencSort(b));
       });
       return;
     }
@@ -611,11 +621,18 @@
     document.getElementById('tbl-state').style.display = 'none';
     document.getElementById('data-table').style.display = 'table';
     document.getElementById('tbl-count').textContent = ` — ${filteredRows.length.toLocaleString('pt-BR')} linhas`;
-    document.getElementById('tbl-body').innerHTML = filteredRows.map(p => `
+    const grps = []; let gc = null;
+    filteredRows.forEach(p => {
+      if (!gc || gc.key !== p.conta_btg) { gc = { key: p.conta_btg, rows: [], total: 0 }; grps.push(gc); }
+      gc.rows.push(p); gc.total += parseFloat(p.valor_bruto) || 0;
+    });
+    document.getElementById('tbl-body').innerHTML = grps.map(g =>
+      g.rows.map(p => `
       <tr>
         <td><span class="badge">${x(p.banker)}</span></td>
         <td>${x(p.client_code)}</td>
         <td class="td-muted td-mono">${x(p.conta_btg)}</td>
+        <td>${x(p.conta)}</td>
         <td>${x(classLabel(p.classe))}</td>
         <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
         <td class="td-muted td-mono">${x(p.codigo)}</td>
@@ -625,7 +642,12 @@
         <td class="td-muted td-vencimento">${fmtDate(p.vencimento)}</td>
         <td class="td-right td-muted">${fmtQty(p.quantidade)}</td>
         <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
-      </tr>`).join('');
+      </tr>`).join('') +
+      `<tr class="subtotal-row">
+        <td colspan="12" class="td-right td-muted">${x(g.key)}</td>
+        <td class="td-right"><strong>${fmtBRL(g.total)}</strong></td>
+      </tr>`
+    ).join('');
     document.querySelectorAll('#data-table thead th').forEach((th, i) => {
       th.classList.remove('sort-asc', 'sort-desc');
       if (sortCol !== null && i === COL_IDX[sortCol]) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
@@ -727,9 +749,13 @@
       caixaRows.sort((a, b) => {
         const cc = String(a.client_code||'').localeCompare(String(b.client_code||''));
         if (cc !== 0) return cc;
+        const co = String(a.conta||'').localeCompare(String(b.conta||''));
+        if (co !== 0) return co;
         const cl = String(a.classe||'').localeCompare(String(b.classe||''));
         if (cl !== 0) return cl;
-        return String(a.nome||'').localeCompare(String(b.nome||''));
+        const nm = String(a.nome||'').localeCompare(String(b.nome||''));
+        if (nm !== 0) return nm;
+        return vencSort(a).localeCompare(vencSort(b));
       });
       return;
     }
@@ -761,11 +787,18 @@
     document.getElementById('caixa-state').style.display = 'none';
     document.getElementById('caixa-table').style.display = 'table';
     document.getElementById('caixa-count').textContent = ` — ${caixaRows.length.toLocaleString('pt-BR')} linhas`;
-    document.getElementById('caixa-body').innerHTML = caixaRows.map(p => `
+    const cGrps = []; let cGc = null;
+    caixaRows.forEach(p => {
+      if (!cGc || cGc.key !== p.conta_btg) { cGc = { key: p.conta_btg, rows: [], total: 0 }; cGrps.push(cGc); }
+      cGc.rows.push(p); cGc.total += parseFloat(p.valor_bruto) || 0;
+    });
+    document.getElementById('caixa-body').innerHTML = cGrps.map(g =>
+      g.rows.map(p => `
       <tr>
         <td><span class="badge">${x(p.banker)}</span></td>
         <td>${x(p.client_code)}</td>
         <td class="td-muted td-mono">${x(p.conta_btg)}</td>
+        <td>${x(p.conta)}</td>
         <td>${x(classLabel(p.classe))}</td>
         <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
         <td class="td-muted td-mono">${x(p.codigo)}</td>
@@ -775,7 +808,12 @@
         <td class="td-muted td-vencimento">${fmtDate(p.vencimento)}</td>
         <td class="td-right td-muted">${fmtQty(p.quantidade)}</td>
         <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
-      </tr>`).join('');
+      </tr>`).join('') +
+      `<tr class="subtotal-row">
+        <td colspan="12" class="td-right td-muted">${x(g.key)}</td>
+        <td class="td-right"><strong>${fmtBRL(g.total)}</strong></td>
+      </tr>`
+    ).join('');
     document.querySelectorAll('#caixa-table thead th').forEach((th, i) => {
       th.classList.remove('sort-asc', 'sort-desc');
       if (caixaSortCol !== null && i === COL_IDX_CAIXA[caixaSortCol]) th.classList.add(caixaSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
