@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BTG Posições — RTS Partners</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -17,179 +18,85 @@
       --accent:       #C4A35A;
       --text:         #E8E6E0;
       --text-muted:   #7A7773;
-      --green:        #2D6A4F;
-      --green-hover:  #1B5233;
       --red:          #E05555;
       --shadow:       0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2);
       --shadow-lg:    0 6px 28px rgba(0,0,0,.5);
       --radius:       6px;
     }
 
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      font-size: 14px;
-    }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
 
-    /* ── LOGIN ──────────────────────────────────────── */
-    #login-screen {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; padding: 1rem; background: var(--bg);
-    }
-    .login-card {
-      background: var(--surface); border-radius: 10px;
-      box-shadow: var(--shadow-lg); padding: 2.5rem 2.25rem;
-      width: 100%; max-width: 390px; border: 1px solid var(--border);
-    }
+    /* LOGIN */
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1rem; background: var(--bg); }
+    .login-card { background: var(--surface); border-radius: 10px; box-shadow: var(--shadow-lg); padding: 2.5rem 2.25rem; width: 100%; max-width: 390px; border: 1px solid var(--border); }
     .login-logo { text-align: center; margin-bottom: 2rem; }
     .login-logo svg { display: block; margin: 0 auto; }
     .login-logo svg path { fill: var(--text); }
-    .login-logo-sub {
-      font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem;
-      letter-spacing: 0.1em; text-transform: uppercase;
-    }
+    .login-logo-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
     .form-group { margin-bottom: 1rem; }
-    label {
-      display: block; font-size: 0.78rem; font-weight: 700;
-      margin-bottom: 0.35rem; color: var(--text);
-      letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    input, select {
-      width: 100%; padding: 0.6rem 0.75rem;
-      border: 1.5px solid var(--border); border-radius: var(--radius);
-      font-size: 0.875rem; color: var(--text); background: var(--surface);
-      transition: border-color 0.15s, box-shadow 0.15s;
-      outline: none; font-family: inherit;
-    }
-    input:focus, select:focus {
-      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(196,163,90,.15);
-    }
+    label { display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text); letter-spacing: 0.04em; text-transform: uppercase; }
+    input, select { width: 100%; padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.875rem; color: var(--text); background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s; outline: none; font-family: inherit; }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(196,163,90,.15); }
     select option { background: var(--surface); color: var(--text); }
     ::-webkit-calendar-picker-indicator { filter: invert(0.85); }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: 0.4rem; padding: 0.625rem 1.25rem; border: none;
-      border-radius: var(--radius); font-size: 0.875rem; font-weight: 700;
-      cursor: pointer; transition: background 0.15s, transform 0.08s;
-      font-family: inherit; white-space: nowrap; letter-spacing: 0.02em;
-    }
-    .btn:active  { transform: scale(0.97); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.625rem 1.25rem; border: none; border-radius: var(--radius); font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: background 0.15s, transform 0.08s; font-family: inherit; white-space: nowrap; letter-spacing: 0.02em; }
+    .btn:active { transform: scale(0.97); }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
     .btn-primary { background: var(--primary); color: #111110; }
     .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
     .btn-secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
     .btn-secondary:hover:not(:disabled) { background: var(--bg); }
     .btn-full { width: 100%; }
-    .error-box {
-      color: var(--red); font-size: 0.8rem; padding: 0.55rem 0.75rem;
-      background: rgba(224,85,85,.1); border-radius: var(--radius);
-      border: 1px solid rgba(224,85,85,.2); margin-bottom: 0.9rem; display: none;
-    }
-    .divider {
-      display: flex; align-items: center; gap: 0.75rem; margin: 1.1rem 0;
-      color: var(--text-muted); font-size: 0.75rem;
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
-    .divider::before, .divider::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
-    .btn-google {
-      background: var(--surface); color: var(--text);
-      border: 1.5px solid var(--border); font-weight: 600;
-    }
+    .error-box { color: var(--red); font-size: 0.8rem; padding: 0.55rem 0.75rem; background: rgba(224,85,85,.1); border-radius: var(--radius); border: 1px solid rgba(224,85,85,.2); margin-bottom: 0.9rem; display: none; }
+    .divider { display: flex; align-items: center; gap: 0.75rem; margin: 1.1rem 0; color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .btn-google { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); font-weight: 600; }
     .btn-google:hover:not(:disabled) { background: var(--bg); }
 
-    /* ── APP ────────────────────────────────────────── */
+    /* APP */
     #app-screen { display: none; }
-    .header {
-      background: #1A1A1A; color: #fff;
-      padding: 0.75rem 1.5rem; display: flex; align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 10px rgba(0,0,0,.4);
-      position: sticky; top: 0; z-index: 100;
-    }
+    .header { background: #1A1A1A; color: #fff; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,.4); position: sticky; top: 0; z-index: 100; }
     .header-left { display: flex; align-items: center; gap: 1rem; }
     .header-logo svg { display: block; }
     .header-sep { width: 1px; height: 28px; background: rgba(255,255,255,.2); }
     .header-page { font-size: 0.8rem; color: rgba(255,255,255,.65); letter-spacing: 0.04em; }
     .header-right { display: flex; align-items: center; gap: 0.75rem; }
-    .header-user  { font-size: 0.75rem; color: rgba(255,255,255,.55); }
-    .btn-logout {
-      background: rgba(255,255,255,.08); color: rgba(255,255,255,.85);
-      border: 1px solid rgba(255,255,255,.18);
-      padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 600;
-    }
+    .header-user { font-size: 0.75rem; color: rgba(255,255,255,.55); }
+    .btn-logout { background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.18); padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 600; }
     .btn-logout:hover { background: rgba(255,255,255,.16); }
 
     .main { padding: 1.5rem; max-width: 1760px; margin: 0 auto; }
 
-    /* ── CARDS ──────────────────────────────────────── */
-    .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); box-shadow: var(--shadow);
-    }
+    /* CARDS */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
     .filters-card { padding: 1.25rem; margin-bottom: 1.25rem; }
-    .card-label {
-      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 1rem;
-    }
-    .filters-grid {
-      display: grid; grid-template-columns: 170px 160px 1fr auto;
-      gap: 1rem; align-items: end;
-    }
+    .card-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 1rem; }
+    .filters-grid { display: grid; grid-template-columns: 170px 160px 1fr auto; gap: 1rem; align-items: end; }
     .filters-actions { display: flex; gap: 0.5rem; }
 
-    /* ── SUMMARY ────────────────────────────────────── */
-    .summary-row {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1rem; margin-bottom: 1.25rem;
-    }
+    /* SUMMARY */
+    .summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
     .summary-card { padding: 1.1rem 1.35rem; }
-    .summary-label {
-      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 0.45rem;
-    }
+    .summary-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 0.45rem; }
     .summary-value { font-size: 1.45rem; font-weight: 800; color: var(--primary); }
-    .summary-sub   { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .summary-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
 
-    /* ── TABS ───────────────────────────────────────── */
-    .tab-bar {
-      display: flex; border-bottom: 1px solid var(--border);
-      margin-bottom: 1.25rem; gap: 0;
-    }
-    .tab-btn {
-      padding: 0.65rem 1.2rem; background: none; border: none;
-      border-bottom: 2px solid transparent; color: var(--text-muted);
-      font-weight: 600; font-size: 0.8rem; cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
-      letter-spacing: 0.03em; margin-bottom: -1px; font-family: inherit;
-    }
+    /* TABS */
+    .tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+    .tab-btn { padding: 0.65rem 1.2rem; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; letter-spacing: 0.03em; margin-bottom: -1px; font-family: inherit; }
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-
     .tab-view { display: none; }
     .tab-view.active { display: block; }
 
-    /* ── TABLE ──────────────────────────────────────── */
+    /* TABLE */
     .table-card { overflow: hidden; margin-bottom: 1.5rem; }
-    .table-head {
-      padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .table-head { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .table-title { font-size: 0.875rem; font-weight: 700; }
     .table-count { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; margin-left: 0.4rem; }
     .table-wrapper { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; table-layout: auto; }
-    thead th {
-      background: #242220; padding: 0.6rem 0.875rem; text-align: left;
-      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 0.06em;
-      border-bottom: 1px solid var(--border); white-space: nowrap;
-      cursor: pointer; user-select: none;
-      transition: background 0.1s, color 0.1s;
-    }
+    thead th { background: #242220; padding: 0.6rem 0.875rem; text-align: left; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; transition: background 0.1s, color 0.1s; }
     thead th.no-sort { cursor: default; }
     thead th:hover:not(.no-sort) { background: #2E2B28; color: var(--text); }
     thead th.sort-asc::after  { content: ' ↑'; opacity: 0.6; }
@@ -200,40 +107,29 @@
     .td-right { text-align: right; font-variant-numeric: tabular-nums; }
     .td-muted { color: var(--text-muted); }
     .td-mono  { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.78rem; }
-    .badge {
-      display: inline-block; padding: 0.18rem 0.5rem; border-radius: 4px;
-      font-size: 0.7rem; font-weight: 700;
-      background: rgba(196,163,90,.18); color: #C4A35A; letter-spacing: 0.03em;
-    }
+    .td-ativo { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+    .badge { display: inline-block; padding: 0.18rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: rgba(196,163,90,.18); color: #C4A35A; letter-spacing: 0.03em; }
 
-    /* ── BREAKDOWN BAR ──────────────────────────────── */
-    .bar-col { min-width: 110px; }
-    .bar-wrap { display: flex; align-items: center; gap: 0.5rem; }
-    .bar-track {
-      flex: 1; height: 5px; background: var(--border);
-      border-radius: 3px; overflow: hidden; min-width: 60px;
-    }
-    .bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
-    .bar-fill.bar-short  { background: #4CAF80; }
-    .bar-fill.bar-medium { background: #C4A35A; }
-    .bar-fill.bar-long   { background: #E07A35; }
-    .bar-pct { font-size: 0.75rem; color: var(--text-muted); min-width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
+    /* PIE CHARTS */
+    .chart-layout { display: flex; gap: 2.5rem; align-items: flex-start; padding: 1.5rem 1.25rem; flex-wrap: wrap; }
+    .chart-canvas-wrap { flex-shrink: 0; }
+    .chart-legend { flex: 1; min-width: 260px; }
+    .chart-legend-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .chart-legend-table thead th { background: #242220; padding: 0.5rem 0.75rem; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); cursor: default; }
+    .chart-legend-table tbody td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); white-space: nowrap; }
+    .chart-legend-table tbody tr:last-child td { border-bottom: none; }
+    .chart-legend-table tbody tr:hover { background: #252320; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-    /* ── STATES ─────────────────────────────────────── */
-    .state-box {
-      padding: 3.5rem 1rem; text-align: center; color: var(--text-muted);
-    }
+    /* STATES */
+    .state-box { padding: 3.5rem 1rem; text-align: center; color: var(--text-muted); }
     .state-icon { font-size: 2.25rem; margin-bottom: 0.7rem; line-height: 1; }
-    .state-msg  { font-size: 0.875rem; }
+    .state-msg { font-size: 0.875rem; }
     .state-msg strong { color: var(--text); }
-    .spinner {
-      width: 28px; height: 28px; border: 3px solid var(--border);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 0.65s linear infinite; margin: 0 auto 0.75rem;
-    }
+    .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.65s linear infinite; margin: 0 auto 0.75rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── RESPONSIVE ─────────────────────────────────── */
+    /* RESPONSIVE */
     @media (max-width: 900px) {
       .filters-grid { grid-template-columns: 1fr 1fr; }
       .filters-grid > *:last-child { grid-column: 1 / -1; }
@@ -245,13 +141,13 @@
       .header-page { display: none; }
       .main { padding: 0.9rem; }
       .filters-grid { grid-template-columns: 1fr; }
-      .summary-row  { grid-template-columns: 1fr; }
+      .summary-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- ════════ LOGIN ════════ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
@@ -277,9 +173,7 @@
       </svg>
       <div class="login-logo-sub">Portal de Relatórios</div>
     </div>
-
     <div id="login-error" class="error-box"></div>
-
     <div class="form-group">
       <label for="inp-email">E-mail</label>
       <input type="email" id="inp-email" placeholder="seu@email.com" autocomplete="email">
@@ -288,7 +182,6 @@
       <label for="inp-password">Senha</label>
       <input type="password" id="inp-password" placeholder="••••••••" autocomplete="current-password">
     </div>
-
     <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">Entrar</button>
     <div class="divider">ou</div>
     <button class="btn btn-google btn-full" id="google-btn" onclick="doGoogleLogin()">
@@ -303,7 +196,7 @@
   </div>
 </div>
 
-<!-- ════════ APP ════════ -->
+<!-- APP -->
 <div id="app-screen">
   <div class="header">
     <div class="header-left">
@@ -330,8 +223,6 @@
   </div>
 
   <div class="main">
-
-    <!-- Filters -->
     <div class="card filters-card">
       <div class="card-label">Filtros</div>
       <div class="filters-grid">
@@ -357,7 +248,6 @@
       </div>
     </div>
 
-    <!-- Summary -->
     <div class="summary-row">
       <div class="card summary-card">
         <div class="summary-label">Clientes na Data</div>
@@ -376,7 +266,6 @@
       </div>
     </div>
 
-    <!-- Tabs -->
     <div class="tab-bar">
       <button class="tab-btn active" onclick="switchTab('positions')">Posições</button>
       <button class="tab-btn" onclick="switchTab('by-class')">Por Classe</button>
@@ -384,7 +273,7 @@
       <button class="tab-btn" onclick="switchTab('maturities')">Vencimentos</button>
     </div>
 
-    <!-- ── View: Posições ─────────────────────── -->
+    <!-- Posições -->
     <div id="view-positions" class="tab-view active">
       <div class="card table-card">
         <div class="table-head">
@@ -421,91 +310,50 @@
       </div>
     </div>
 
-    <!-- ── View: Por Classe ───────────────────── -->
+    <!-- Por Classe -->
     <div id="view-by-class" class="tab-view">
       <div class="card table-card">
-        <div class="table-head">
-          <span class="table-title">Alocação por Classe de Ativo</span>
+        <div class="table-head"><span class="table-title">Alocação por Classe de Ativo</span></div>
+        <div id="cls-state" class="state-box">
+          <div class="state-icon">📊</div>
+          <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
         </div>
-        <div class="table-wrapper">
-          <div id="cls-state" class="state-box">
-            <div class="state-icon">📊</div>
-            <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
-          </div>
-          <table id="cls-table" style="display:none">
-            <thead>
-              <tr>
-                <th class="no-sort" style="width:2rem">#</th>
-                <th class="no-sort">Classe</th>
-                <th class="no-sort" style="text-align:right">AuM Bruto</th>
-                <th class="no-sort" style="text-align:right">% do Total</th>
-                <th class="no-sort">Distribuição</th>
-                <th class="no-sort" style="text-align:right">Contas</th>
-                <th class="no-sort" style="text-align:right">Ativos</th>
-              </tr>
-            </thead>
-            <tbody id="cls-body"></tbody>
-          </table>
+        <div id="cls-chart-wrap" style="display:none" class="chart-layout">
+          <div class="chart-canvas-wrap"><canvas id="cls-canvas" width="280" height="280"></canvas></div>
+          <div id="cls-legend" class="chart-legend"></div>
         </div>
       </div>
     </div>
 
-    <!-- ── View: Por Banker ───────────────────── -->
+    <!-- Por Banker -->
     <div id="view-by-banker" class="tab-view">
       <div class="card table-card">
-        <div class="table-head">
-          <span class="table-title">Desempenho por Banker</span>
+        <div class="table-head"><span class="table-title">Desempenho por Banker</span></div>
+        <div id="bnk-state" class="state-box">
+          <div class="state-icon">👤</div>
+          <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
         </div>
-        <div class="table-wrapper">
-          <div id="bnk-state" class="state-box">
-            <div class="state-icon">👤</div>
-            <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
-          </div>
-          <table id="bnk-table" style="display:none">
-            <thead>
-              <tr>
-                <th class="no-sort" style="width:2rem">#</th>
-                <th class="no-sort">Banker</th>
-                <th class="no-sort" style="text-align:right">Contas</th>
-                <th class="no-sort" style="text-align:right">Ativos</th>
-                <th class="no-sort" style="text-align:right">AuM Total</th>
-                <th class="no-sort" style="text-align:right">AuM Médio/Conta</th>
-                <th class="no-sort">Participação</th>
-              </tr>
-            </thead>
-            <tbody id="bnk-body"></tbody>
-          </table>
+        <div id="bnk-chart-wrap" style="display:none" class="chart-layout">
+          <div class="chart-canvas-wrap"><canvas id="bnk-canvas" width="280" height="280"></canvas></div>
+          <div id="bnk-legend" class="chart-legend"></div>
         </div>
       </div>
     </div>
 
-    <!-- ── View: Vencimentos ─────────────────── -->
+    <!-- Vencimentos -->
     <div id="view-maturities" class="tab-view">
       <div class="card table-card">
-        <div class="table-head">
-          <span class="table-title">Ladder de Vencimentos</span>
+        <div class="table-head"><span class="table-title">Ladder de Vencimentos</span></div>
+        <div id="mat-state" class="state-box">
+          <div class="state-icon">📅</div>
+          <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
         </div>
-        <div class="table-wrapper">
-          <div id="mat-state" class="state-box">
-            <div class="state-icon">📅</div>
-            <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
-          </div>
-          <table id="mat-table" style="display:none">
-            <thead>
-              <tr>
-                <th class="no-sort">Prazo</th>
-                <th class="no-sort" style="text-align:right">Ativos</th>
-                <th class="no-sort" style="text-align:right">AuM Bruto</th>
-                <th class="no-sort" style="text-align:right">% do Total</th>
-                <th class="no-sort">Perfil</th>
-              </tr>
-            </thead>
-            <tbody id="mat-body"></tbody>
-          </table>
+        <div id="mat-chart-wrap" style="display:none" class="chart-layout">
+          <div class="chart-canvas-wrap"><canvas id="mat-canvas" width="280" height="280"></canvas></div>
+          <div id="mat-legend" class="chart-legend"></div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -513,16 +361,17 @@
   const SB_URL = 'https://gmvraqrvovvpuxmqgkaz.supabase.co';
   const SB_KEY = 'sb_publishable_fLL0TQYYCP7frJIqf-S49g_3Q2LNDUI';
 
-  let sb;
-  let appReady     = false;
-  let clientMap    = {};
-  let allClients   = [];
-  let holidays     = new Set();
-  let allPositions = [];
-  let filteredRows = [];
-  let sortCol      = 'valor_bruto';
-  let sortDir      = 'desc';
-  let activeTab    = 'positions';
+  const PALETTE = [
+    '#C4A35A','#5A9BD4','#6EC27A','#D4705A','#A05AD4',
+    '#5AD4C8','#D49A5A','#5A70D4','#D45A9B','#7AC25A',
+    '#D4C85A','#5AD4A0','#C45A70','#70A05A','#5AC4D4'
+  ];
+
+  let sb, appReady = false, clientMap = {}, allClients = [], holidays = new Set();
+  let allPositions = [], filteredRows = [];
+  let sortCol = null, sortDir = 'asc';
+  let activeTab = 'positions';
+  let clsChart = null, bnkChart = null, matChart = null;
 
   const COL_IDX = {
     banker:0, client_code:1, conta_btg:2, classe:3,
@@ -530,39 +379,29 @@
     quantidade:9, vencimento:10, valor_bruto:11
   };
 
-  /* ── INIT ─────────────────────────────────── */
+  /* INIT */
   window.addEventListener('DOMContentLoaded', async () => {
     sb = supabase.createClient(SB_URL, SB_KEY);
+    Chart.defaults.color = '#7A7773';
+    Chart.defaults.borderColor = '#2E2C2A';
     await loadHolidays();
-
     sb.auth.onAuthStateChange(async (event, session) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session && !appReady) {
-        appReady = true;
-        await enterApp(session.user);
+        appReady = true; await enterApp(session.user);
       }
     });
-
     const { data: { session } } = await sb.auth.getSession();
     if (session && !appReady) { appReady = true; await enterApp(session.user); }
-
-    document.getElementById('inp-password').addEventListener('keydown', e => {
-      if (e.key === 'Enter') doLogin();
-    });
+    document.getElementById('inp-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
     document.getElementById('f-banker').addEventListener('change', rebuildClientDropdown);
   });
 
-  /* ── HOLIDAYS ─────────────────────────────── */
+  /* HOLIDAYS */
   async function loadHolidays() {
-    try {
-      const { data } = await sb.from('tb_feriados').select('data');
-      if (data) data.forEach(r => holidays.add(r.data));
-    } catch (_) {}
+    try { const { data } = await sb.from('tb_feriados').select('data'); if (data) data.forEach(r => holidays.add(r.data)); } catch (_) {}
   }
-
   function lastWorkingDay() {
-    const d = new Date();
-    d.setHours(12, 0, 0, 0);
-    d.setDate(d.getDate() - 1);
+    const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - 1);
     for (let i = 0; i < 30; i++) {
       const dow = d.getDay(), iso = d.toISOString().split('T')[0];
       if (dow !== 0 && dow !== 6 && !holidays.has(iso)) return iso;
@@ -571,113 +410,68 @@
     return new Date(Date.now() - 86400000).toISOString().split('T')[0];
   }
 
-  /* ── AUTH ─────────────────────────────────── */
+  /* AUTH */
   async function doLogin() {
     const email = document.getElementById('inp-email').value.trim();
     const password = document.getElementById('inp-password').value;
-    const errEl = document.getElementById('login-error');
-    const btn = document.getElementById('login-btn');
-    errEl.style.display = 'none';
-    btn.textContent = 'Entrando…'; btn.disabled = true;
-
+    const errEl = document.getElementById('login-error'), btn = document.getElementById('login-btn');
+    errEl.style.display = 'none'; btn.textContent = 'Entrando…'; btn.disabled = true;
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) {
-      errEl.textContent = 'E-mail ou senha incorretos. Tente novamente.';
-      errEl.style.display = 'block';
-      btn.textContent = 'Entrar'; btn.disabled = false;
-      return;
-    }
+    if (error) { errEl.textContent = 'E-mail ou senha incorretos.'; errEl.style.display = 'block'; btn.textContent = 'Entrar'; btn.disabled = false; return; }
     if (!appReady) { appReady = true; await enterApp(data.user); }
   }
-
   async function doGoogleLogin() {
-    const errEl = document.getElementById('login-error');
-    const btn   = document.getElementById('google-btn');
-    errEl.style.display = 'none';
-    btn.disabled = true; btn.textContent = 'Redirecionando…';
+    const errEl = document.getElementById('login-error'), btn = document.getElementById('google-btn');
+    errEl.style.display = 'none'; btn.disabled = true; btn.textContent = 'Redirecionando…';
     const redirectTo = window.location.href.split('#')[0].split('?')[0];
     const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
-    if (error) {
-      errEl.textContent = 'Erro ao iniciar login com Google: ' + error.message;
-      errEl.style.display = 'block';
-      btn.disabled = false;
-      btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Entrar com Google`;
-    }
+    if (error) { errEl.textContent = 'Erro ao iniciar login com Google: ' + error.message; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Entrar com Google'; }
   }
-
   async function doLogout() { await sb.auth.signOut(); location.reload(); }
 
-  /* ── ENTER APP ────────────────────────────── */
+  /* ENTER APP */
   async function enterApp(user) {
     document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display   = 'block';
-    document.getElementById('hdr-email').textContent      = user.email;
+    document.getElementById('app-screen').style.display = 'block';
+    document.getElementById('hdr-email').textContent = user.email;
     document.getElementById('f-date').value = lastWorkingDay();
-    await loadClients();
-    buildBankerDropdown();
-    rebuildClientDropdown();
+    await loadClients(); buildBankerDropdown(); rebuildClientDropdown();
   }
 
-  /* ── CLIENTS ──────────────────────────────── */
+  /* CLIENTS */
   async function loadClients() {
-    const { data, error } = await sb
-      .from('tb_clientes')
-      .select('id, conta_btg, nome, banker, code, conta')
-      .not('conta_btg', 'is', null);
+    const { data, error } = await sb.from('tb_clientes').select('id, conta_btg, nome, banker, code, conta').not('conta_btg', 'is', null);
     if (error) { console.error('loadClients error:', error); return; }
-    allClients = (data || [])
-      .map(c => ({ ...c, conta_btg: c.conta_btg ? c.conta_btg.trim() : null }))
-      .filter(c => c.conta_btg);
+    allClients = (data || []).map(c => ({ ...c, conta_btg: c.conta_btg ? c.conta_btg.trim() : null })).filter(c => c.conta_btg);
     clientMap = {};
     allClients.forEach(c => {
-      clientMap[c.conta_btg] = {
-        nome:        c.nome   || '',
-        banker:      c.banker || '',
-        code:        c.code   || '',
-        client_code: (c.banker && c.code) ? `${c.banker}-${c.code}` : '',
-        id:          c.id,
-        conta:       c.conta  || ''
-      };
+      clientMap[c.conta_btg] = { nome: c.nome||'', banker: c.banker||'', code: c.code||'', client_code: (c.banker && c.code) ? `${c.banker}-${c.code}` : '', id: c.id, conta: c.conta||'' };
     });
   }
-
   function buildBankerDropdown() {
     const bankers = [...new Set(allClients.map(c => c.banker).filter(Boolean))].sort();
     const sel = document.getElementById('f-banker');
     sel.innerHTML = '<option value="">Todos</option>';
     bankers.forEach(b => addOption(sel, b, b));
   }
-
   function rebuildClientDropdown() {
-    const banker = document.getElementById('f-banker').value;
-    const sel    = document.getElementById('f-client');
-    const prev   = sel.value;
-    const rows   = banker ? allClients.filter(c => c.banker === banker) : allClients;
-    const opts   = rows
-      .filter(c => c.conta_btg)
-      .map(c => ({
-        value:   c.conta_btg,
-        label:   `${c.conta_btg} — ${c.banker}-${c.code} — ${c.id} — ${c.conta}`,
-        sortKey: `${c.banker || ''}-${c.code || ''}-${c.conta || ''}`
-      }))
-      .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+    const banker = document.getElementById('f-banker').value, sel = document.getElementById('f-client'), prev = sel.value;
+    const rows = banker ? allClients.filter(c => c.banker === banker) : allClients;
+    const opts = rows.filter(c => c.conta_btg).map(c => ({ value: c.conta_btg, label: `${c.conta_btg} — ${c.banker}-${c.code} — ${c.id} — ${c.conta}`, sortKey: `${c.banker||''}-${c.code||''}-${c.conta||''}` })).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
     sel.innerHTML = '<option value="">Todos</option>';
     opts.forEach(o => addOption(sel, o.value, o.label));
     if (prev && opts.some(o => o.value === prev)) sel.value = prev;
     if (allPositions.length) applyClientFilter();
   }
 
-  /* ── TABS ─────────────────────────────────── */
+  /* TABS */
   function switchTab(name) {
     activeTab = name;
-    document.querySelectorAll('.tab-btn').forEach((b, i) => {
-      b.classList.toggle('active', ['positions','by-class','by-banker','maturities'][i] === name);
-    });
+    document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', ['positions','by-class','by-banker','maturities'][i] === name));
     document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
     if (filteredRows.length) renderTab(name);
   }
-
   function renderTab(name) {
     if (name === 'positions') render();
     else if (name === 'by-class') renderByClass();
@@ -685,84 +479,69 @@
     else if (name === 'maturities') renderMaturities();
   }
 
-  /* ── POSITIONS ────────────────────────────── */
+  /* FETCH + FILTER */
   async function applyFilters() {
     const date = document.getElementById('f-date').value;
-    if (!date) { alert('Selecione uma data para buscar as posições.'); return; }
-    setSearching(true);
-    setStateLoading();
-    try {
-      allPositions = await fetchPositions(date);
-      applyClientFilter();
-    } catch (err) {
-      setStateError('Erro ao carregar posições: ' + err.message);
-    } finally {
-      setSearching(false);
-    }
+    if (!date) { alert('Selecione uma data.'); return; }
+    setSearching(true); setStateLoading();
+    try { allPositions = await fetchPositions(date); applyClientFilter(); }
+    catch (err) { setStateError('Erro ao carregar posições: ' + err.message); }
+    finally { setSearching(false); }
   }
-
   async function fetchPositions(date) {
-    const PAGE = 1000;
-    let from = 0, all = [];
+    const PAGE = 1000; let from = 0, all = [];
     while (true) {
-      const { data, error } = await sb
-        .from('tb_btg_position')
-        .select('conta_btg, data, classe, codigo, nome, emissor, quantidade, valor_bruto, taxa, vencimento, indexador')
-        .eq('data', date)
-        .range(from, from + PAGE - 1);
+      const { data, error } = await sb.from('tb_btg_position').select('conta_btg, data, classe, codigo, nome, emissor, quantidade, valor_bruto, taxa, vencimento, indexador').eq('data', date).range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
       all = all.concat(data);
       if (data.length < PAGE) break;
       from += PAGE;
     }
-    return all.map(p => {
-      const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg;
-      const ci  = clientMap[key] || {};
-      return { ...p, conta_btg: key, banker: ci.banker || '', client_code: ci.client_code || '' };
-    });
+    return all.map(p => { const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg; const ci = clientMap[key] || {}; return { ...p, conta_btg: key, banker: ci.banker||'', client_code: ci.client_code||'' }; });
   }
-
   function applyClientFilter() {
-    const banker   = document.getElementById('f-banker').value;
-    const contaBtg = document.getElementById('f-client').value;
-    filteredRows = allPositions.filter(p => {
-      if (!p.banker) return false;
-      if (banker   && p.banker    !== banker)   return false;
-      if (contaBtg && p.conta_btg !== contaBtg) return false;
-      return true;
-    });
-    sortApply();
-    renderSummary();
-    renderTab(activeTab);
+    const banker = document.getElementById('f-banker').value, contaBtg = document.getElementById('f-client').value;
+    filteredRows = allPositions.filter(p => { if (!p.banker) return false; if (banker && p.banker !== banker) return false; if (contaBtg && p.conta_btg !== contaBtg) return false; return true; });
+    sortApply(); renderSummary(); renderTab(activeTab);
   }
-
   function clearFilters() {
-    document.getElementById('f-date').value   = lastWorkingDay();
+    document.getElementById('f-date').value = lastWorkingDay();
     document.getElementById('f-banker').value = '';
     rebuildClientDropdown();
     allPositions = []; filteredRows = [];
-    clearSummary();
-    setStateEmpty();
+    sortCol = null; sortDir = 'asc';
+    clearSummary(); setStateEmpty();
     ['cls','bnk','mat'].forEach(p => {
-      document.getElementById(p + '-table').style.display = 'none';
+      document.getElementById(p + '-chart-wrap').style.display = 'none';
       document.getElementById(p + '-state').style.display = 'block';
       document.getElementById(p + '-state').innerHTML = emptyPrompt();
     });
+    [clsChart, bnkChart, matChart].forEach(c => { if (c) c.destroy(); });
+    clsChart = bnkChart = matChart = null;
   }
 
-  /* ── SORT ─────────────────────────────────── */
+  /* SORT */
   function sortBy(col) {
     if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
     else { sortCol = col; sortDir = 'asc'; }
     sortApply(); render();
   }
-
   function sortApply() {
+    if (sortCol === null) {
+      filteredRows.sort((a, b) => {
+        const cc = String(a.client_code||'').localeCompare(String(b.client_code||''));
+        if (cc !== 0) return cc;
+        const cl = String(a.classe||'').localeCompare(String(b.classe||''));
+        if (cl !== 0) return cl;
+        return String(a.nome||'').localeCompare(String(b.nome||''));
+      });
+      return;
+    }
     filteredRows.sort((a, b) => {
       let va = a[sortCol], vb = b[sortCol];
-      if (va == null) va = sortDir === 'asc' ?  Infinity : -Infinity;
-      if (vb == null) vb = sortDir === 'asc' ?  Infinity : -Infinity;
+      if (va == null) va = sortDir === 'asc' ? Infinity : -Infinity;
+      if (vb == null) vb = sortDir === 'asc' ? Infinity : -Infinity;
       const na = parseFloat(va), nb = parseFloat(vb);
       if (!isNaN(na) && !isNaN(nb)) return sortDir === 'asc' ? na - nb : nb - na;
       const sa = String(va).toLowerCase(), sb2 = String(vb).toLowerCase();
@@ -770,25 +549,19 @@
     });
   }
 
-  /* ── RENDER: POSITIONS ────────────────────── */
+  /* RENDER: POSITIONS */
   function render() {
-    if (!filteredRows.length) {
-      document.getElementById('data-table').style.display = 'none';
-      document.getElementById('tbl-count').textContent = '';
-      setStateNoResults();
-      return;
-    }
-    document.getElementById('tbl-state').style.display  = 'none';
+    if (!filteredRows.length) { document.getElementById('data-table').style.display = 'none'; document.getElementById('tbl-count').textContent = ''; setStateNoResults(); return; }
+    document.getElementById('tbl-state').style.display = 'none';
     document.getElementById('data-table').style.display = 'table';
-    document.getElementById('tbl-count').textContent    = ` — ${filteredRows.length.toLocaleString('pt-BR')} linhas`;
-
+    document.getElementById('tbl-count').textContent = ` — ${filteredRows.length.toLocaleString('pt-BR')} linhas`;
     document.getElementById('tbl-body').innerHTML = filteredRows.map(p => `
       <tr>
         <td><span class="badge">${x(p.banker)}</span></td>
         <td>${x(p.client_code)}</td>
         <td class="td-muted td-mono">${x(p.conta_btg)}</td>
         <td>${x(p.classe)}</td>
-        <td>${x(p.nome)}</td>
+        <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
         <td class="td-muted td-mono">${x(p.codigo)}</td>
         <td class="td-muted">${x(p.emissor)}</td>
         <td>${x(p.indexador)}</td>
@@ -797,192 +570,129 @@
         <td class="td-muted">${fmtDate(p.vencimento)}</td>
         <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
       </tr>`).join('');
-
-    document.querySelectorAll('thead th').forEach((th, i) => {
+    document.querySelectorAll('#data-table thead th').forEach((th, i) => {
       th.classList.remove('sort-asc', 'sort-desc');
-      if (i === COL_IDX[sortCol]) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      if (sortCol !== null && i === COL_IDX[sortCol]) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
     });
   }
 
-  /* ── RENDER: BY CLASS ─────────────────────── */
-  function renderByClass() {
-    const map = {};
-    filteredRows.forEach(p => {
-      const k = p.classe || 'Outros';
-      if (!map[k]) map[k] = { aum: 0, ativos: 0, contas: new Set() };
-      map[k].aum += parseFloat(p.valor_bruto) || 0;
-      map[k].ativos++;
-      if (p.conta_btg) map[k].contas.add(p.conta_btg);
-    });
-    const total = Object.values(map).reduce((s, v) => s + v.aum, 0);
-    const rows  = Object.entries(map)
-      .map(([k, v]) => ({ classe: k, aum: v.aum, ativos: v.ativos, contas: v.contas.size, pct: total ? v.aum / total : 0 }))
-      .sort((a, b) => b.aum - a.aum);
-
-    document.getElementById('cls-state').style.display = 'none';
-    document.getElementById('cls-table').style.display = 'table';
-    document.getElementById('cls-body').innerHTML = rows.map((r, i) => `
-      <tr>
-        <td class="td-muted" style="font-size:0.75rem">${i + 1}</td>
-        <td><strong>${x(r.classe)}</strong></td>
-        <td class="td-right"><strong>${fmtBRL(r.aum)}</strong></td>
-        <td class="td-right td-muted">${(r.pct * 100).toFixed(1)}%</td>
-        <td class="bar-col"><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${(r.pct * 100).toFixed(1)}%"></div></div></div></td>
-        <td class="td-right td-muted">${r.contas.toLocaleString('pt-BR')}</td>
-        <td class="td-right td-muted">${r.ativos.toLocaleString('pt-BR')}</td>
-      </tr>`).join('');
-  }
-
-  /* ── RENDER: BY BANKER ────────────────────── */
-  function renderByBanker() {
-    const map = {};
-    filteredRows.forEach(p => {
-      const k = p.banker || '(sem banker)';
-      if (!map[k]) map[k] = { aum: 0, ativos: 0, contas: new Set() };
-      map[k].aum += parseFloat(p.valor_bruto) || 0;
-      map[k].ativos++;
-      if (p.conta_btg) map[k].contas.add(p.conta_btg);
-    });
-    const total = Object.values(map).reduce((s, v) => s + v.aum, 0);
-    const rows  = Object.entries(map)
-      .map(([k, v]) => ({ banker: k, aum: v.aum, ativos: v.ativos, contas: v.contas.size, pct: total ? v.aum / total : 0 }))
-      .sort((a, b) => b.aum - a.aum);
-
-    document.getElementById('bnk-state').style.display = 'none';
-    document.getElementById('bnk-table').style.display = 'table';
-    document.getElementById('bnk-body').innerHTML = rows.map((r, i) => `
-      <tr>
-        <td class="td-muted" style="font-size:0.75rem">${i + 1}</td>
-        <td><span class="badge">${x(r.banker)}</span></td>
-        <td class="td-right td-muted">${r.contas.toLocaleString('pt-BR')}</td>
-        <td class="td-right td-muted">${r.ativos.toLocaleString('pt-BR')}</td>
-        <td class="td-right"><strong>${fmtBRL(r.aum)}</strong></td>
-        <td class="td-right td-muted">${fmtBRL(r.contas ? r.aum / r.contas : 0)}</td>
-        <td class="bar-col"><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${(r.pct * 100).toFixed(1)}%"></div></div><span class="bar-pct">${(r.pct * 100).toFixed(1)}%</span></div></td>
-      </tr>`).join('');
-  }
-
-  /* ── RENDER: MATURITIES ───────────────────── */
-  function renderMaturities() {
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const BUCKETS = [
-      { label: 'Sem vencimento', color: 'bar-medium', aum: 0, ativos: 0 },
-      { label: '≤ 30 dias',      color: 'bar-short',  aum: 0, ativos: 0, min: 0,    max: 30   },
-      { label: '31 – 90 dias',   color: 'bar-short',  aum: 0, ativos: 0, min: 31,   max: 90   },
-      { label: '91 – 180 dias',  color: 'bar-short',  aum: 0, ativos: 0, min: 91,   max: 180  },
-      { label: '181 dias – 1a',  color: 'bar-medium', aum: 0, ativos: 0, min: 181,  max: 365  },
-      { label: '1 – 2 anos',     color: 'bar-medium', aum: 0, ativos: 0, min: 366,  max: 730  },
-      { label: '2 – 5 anos',     color: 'bar-long',   aum: 0, ativos: 0, min: 731,  max: 1825 },
-      { label: '> 5 anos',       color: 'bar-long',   aum: 0, ativos: 0, min: 1826, max: null },
-    ];
-
-    filteredRows.forEach(p => {
-      const aum = parseFloat(p.valor_bruto) || 0;
-      if (!p.vencimento) { BUCKETS[0].aum += aum; BUCKETS[0].ativos++; return; }
-      const venc = new Date(p.vencimento + 'T12:00:00');
-      const days = Math.ceil((venc - today) / 86400000);
-      for (let i = 1; i < BUCKETS.length; i++) {
-        const b = BUCKETS[i];
-        if (days >= b.min && (b.max === null || days <= b.max)) {
-          b.aum += aum; b.ativos++; break;
+  /* RENDER: PIE CHARTS */
+  function makePie(canvasId, legendId, colHeader, labels, values) {
+    const total = values.reduce((a, b) => a + b, 0);
+    const colors = labels.map((_, i) => PALETTE[i % PALETTE.length]);
+    const chart = new Chart(document.getElementById(canvasId), {
+      type: 'doughnut',
+      data: { labels, datasets: [{ data: values, backgroundColor: colors, borderColor: '#1C1B1A', borderWidth: 2, hoverBorderWidth: 3 }] },
+      options: {
+        responsive: false,
+        cutout: '58%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${fmtBRLPlain(ctx.raw)} (${total ? (ctx.raw / total * 100).toFixed(1) : '0.0'}%)` } }
         }
       }
     });
-
-    const total = BUCKETS.reduce((s, b) => s + b.aum, 0);
-    document.getElementById('mat-state').style.display = 'none';
-    document.getElementById('mat-table').style.display = 'table';
-    document.getElementById('mat-body').innerHTML = BUCKETS.map(b => {
-      const pct = total ? b.aum / total : 0;
-      return `<tr>
-        <td><strong>${b.label}</strong></td>
-        <td class="td-right td-muted">${b.ativos.toLocaleString('pt-BR')}</td>
-        <td class="td-right"><strong>${fmtBRL(b.aum)}</strong></td>
-        <td class="td-right td-muted">${(pct * 100).toFixed(1)}%</td>
-        <td class="bar-col"><div class="bar-wrap"><div class="bar-track"><div class="bar-fill ${b.color}" style="width:${(pct * 100).toFixed(1)}%"></div></div><span class="bar-pct">${(pct * 100).toFixed(1)}%</span></div></td>
-      </tr>`;
-    }).join('');
+    document.getElementById(legendId).innerHTML = `
+      <table class="chart-legend-table">
+        <thead><tr>
+          <th class="no-sort" style="width:18px"></th>
+          <th class="no-sort">${colHeader}</th>
+          <th class="no-sort" style="text-align:right">AuM Bruto</th>
+          <th class="no-sort" style="text-align:right">%</th>
+        </tr></thead>
+        <tbody>${labels.map((lbl, i) => `
+          <tr>
+            <td><span class="legend-dot" style="background:${colors[i]}"></span></td>
+            <td>${lbl}</td>
+            <td style="text-align:right"><strong>${fmtBRLPlain(values[i])}</strong></td>
+            <td style="text-align:right;color:var(--text-muted)">${total ? (values[i] / total * 100).toFixed(1) : '0.0'}%</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+    return chart;
   }
 
-  /* ── SUMMARY ──────────────────────────────── */
+  function renderByClass() {
+    const map = {};
+    filteredRows.forEach(p => { const k = p.classe || 'Outros'; map[k] = (map[k] || 0) + (parseFloat(p.valor_bruto) || 0); });
+    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+    document.getElementById('cls-state').style.display = 'none';
+    document.getElementById('cls-chart-wrap').style.display = 'flex';
+    if (clsChart) { clsChart.destroy(); clsChart = null; }
+    clsChart = makePie('cls-canvas', 'cls-legend', 'Classe', sorted.map(e => e[0]), sorted.map(e => e[1]));
+  }
+
+  function renderByBanker() {
+    const map = {};
+    filteredRows.forEach(p => { const k = p.banker || '(sem banker)'; map[k] = (map[k] || 0) + (parseFloat(p.valor_bruto) || 0); });
+    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
+    document.getElementById('bnk-state').style.display = 'none';
+    document.getElementById('bnk-chart-wrap').style.display = 'flex';
+    if (bnkChart) { bnkChart.destroy(); bnkChart = null; }
+    bnkChart = makePie('bnk-canvas', 'bnk-legend', 'Banker', sorted.map(e => e[0]), sorted.map(e => e[1]));
+  }
+
+  function renderMaturities() {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const BUCKETS = [
+      { label: '≤ 30 dias',      min: 0,    max: 30,   aum: 0 },
+      { label: '31 – 90 dias',   min: 31,   max: 90,   aum: 0 },
+      { label: '91 – 180 dias',  min: 91,   max: 180,  aum: 0 },
+      { label: '181 dias – 1a',  min: 181,  max: 365,  aum: 0 },
+      { label: '1 – 2 anos',     min: 366,  max: 730,  aum: 0 },
+      { label: '2 – 5 anos',     min: 731,  max: 1825, aum: 0 },
+      { label: '> 5 anos',       min: 1826, max: null, aum: 0 },
+      { label: 'Sem vencimento', min: null, max: null, aum: 0 },
+    ];
+    filteredRows.forEach(p => {
+      const aum = parseFloat(p.valor_bruto) || 0;
+      if (!p.vencimento) { BUCKETS[7].aum += aum; return; }
+      const days = Math.ceil((new Date(p.vencimento + 'T12:00:00') - today) / 86400000);
+      for (let i = 0; i < 7; i++) { const b = BUCKETS[i]; if (days >= b.min && (b.max === null || days <= b.max)) { b.aum += aum; break; } }
+    });
+    const active = BUCKETS.filter(b => b.aum > 0);
+    document.getElementById('mat-state').style.display = 'none';
+    document.getElementById('mat-chart-wrap').style.display = 'flex';
+    if (matChart) { matChart.destroy(); matChart = null; }
+    matChart = makePie('mat-canvas', 'mat-legend', 'Prazo', active.map(b => b.label), active.map(b => b.aum));
+  }
+
+  /* SUMMARY */
   function renderSummary() {
-    const uniq  = new Set(filteredRows.map(p => p.conta_btg)).size;
+    const uniq = new Set(filteredRows.map(p => p.conta_btg)).size;
     const total = filteredRows.reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0);
     document.getElementById('s-clients').textContent = uniq.toLocaleString('pt-BR');
     document.getElementById('s-rows').textContent    = filteredRows.length.toLocaleString('pt-BR');
-    document.getElementById('s-aum').textContent     = fmtBRL(total);
+    document.getElementById('s-aum').textContent     = fmtBRLPlain(total);
   }
+  function clearSummary() { ['s-clients','s-rows','s-aum'].forEach(id => document.getElementById(id).textContent = '—'); }
 
-  function clearSummary() {
-    ['s-clients','s-rows','s-aum'].forEach(id => document.getElementById(id).textContent = '—');
-  }
-
-  /* ── STATE HELPERS ────────────────────────── */
-  function emptyPrompt() {
-    return `<div class="state-icon">📋</div><div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>`;
-  }
-
+  /* STATE HELPERS */
+  function emptyPrompt() { return `<div class="state-icon">📋</div><div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>`; }
   function setStateLoading() {
-    ['data-table','tbl-count'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el.tagName === 'TABLE') el.style.display = 'none'; else el.textContent = '';
-    });
+    document.getElementById('data-table').style.display = 'none';
+    document.getElementById('tbl-count').textContent = '';
     document.getElementById('tbl-state').style.display = 'block';
     document.getElementById('tbl-state').innerHTML = `<div class="spinner"></div><div class="state-msg">Carregando posições…</div>`;
   }
-
   function setStateEmpty() {
     document.getElementById('data-table').style.display = 'none';
-    document.getElementById('tbl-count').textContent    = '';
-    document.getElementById('tbl-state').style.display  = 'block';
+    document.getElementById('tbl-count').textContent = '';
+    document.getElementById('tbl-state').style.display = 'block';
     document.getElementById('tbl-state').innerHTML = `<div class="state-icon">📋</div><div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar as posições.</div>`;
   }
+  function setStateNoResults() { document.getElementById('tbl-state').style.display = 'block'; document.getElementById('tbl-state').innerHTML = `<div class="state-icon">🔍</div><div class="state-msg">Nenhuma posição encontrada para os filtros selecionados.</div>`; }
+  function setStateError(msg) { document.getElementById('tbl-state').style.display = 'block'; document.getElementById('tbl-state').innerHTML = `<div class="state-icon">⚠️</div><div class="state-msg">${msg}</div>`; }
+  function setSearching(on) { const btn = document.getElementById('search-btn'); btn.textContent = on ? 'Buscando…' : 'Buscar'; btn.disabled = on; }
 
-  function setStateNoResults() {
-    document.getElementById('tbl-state').style.display = 'block';
-    document.getElementById('tbl-state').innerHTML = `<div class="state-icon">🔍</div><div class="state-msg">Nenhuma posição encontrada para os filtros selecionados.</div>`;
-  }
-
-  function setStateError(msg) {
-    document.getElementById('tbl-state').style.display = 'block';
-    document.getElementById('tbl-state').innerHTML = `<div class="state-icon">⚠️</div><div class="state-msg">${msg}</div>`;
-  }
-
-  function setSearching(on) {
-    const btn = document.getElementById('search-btn');
-    btn.textContent = on ? 'Buscando…' : 'Buscar';
-    btn.disabled    = on;
-  }
-
-  /* ── FORMATTERS ───────────────────────────── */
-  function x(v) {
-    if (v == null || v === '') return '<span class="td-muted">—</span>';
-    return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-  function fmtBRL(v) {
-    const n = parseFloat(v);
-    if (isNaN(n)) return '<span class="td-muted">—</span>';
-    return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2 });
-  }
-  function fmtQty(v) {
-    const n = parseFloat(v);
-    if (isNaN(n)) return '<span class="td-muted">—</span>';
-    return n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:6 });
-  }
-  function fmtRate(v) {
-    const n = parseFloat(v);
-    if (isNaN(n)) return '<span class="td-muted">—</span>';
-    return n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:4 }) + '%';
-  }
-  function fmtDate(v) {
-    if (!v) return '<span class="td-muted">—</span>';
-    const [y, m, d] = String(v).split('-');
-    return (y && m && d) ? `${d}/${m}/${y}` : v;
-  }
-  function addOption(sel, value, label) {
-    const o = document.createElement('option');
-    o.value = value; o.textContent = label; sel.appendChild(o);
-  }
+  /* FORMATTERS */
+  function x(v) { if (v == null || v === '') return '<span class="td-muted">—</span>'; return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtBRLPlain(v) { const n = parseFloat(v); if (isNaN(n)) return '—'; return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2 }); }
+  function fmtBRL(v) { const s = fmtBRLPlain(v); return s === '—' ? '<span class="td-muted">—</span>' : s; }
+  function fmtQty(v) { const n = parseFloat(v); if (isNaN(n)) return '<span class="td-muted">—</span>'; return n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:6 }); }
+  function fmtRate(v) { const n = parseFloat(v); if (isNaN(n)) return '<span class="td-muted">—</span>'; return n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:4 }) + '%'; }
+  function fmtDate(v) { if (!v) return '<span class="td-muted">—</span>'; const [y,m,d] = String(v).split('-'); return (y && m && d) ? `${d}/${m}/${y}` : v; }
+  function addOption(sel, value, label) { const o = document.createElement('option'); o.value = value; o.textContent = label; sel.appendChild(o); }
 </script>
 </body>
 </html>
