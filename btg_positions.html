@@ -95,6 +95,11 @@
     .table-title { font-size: 0.875rem; font-weight: 700; }
     .table-count { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; margin-left: 0.4rem; }
     .table-wrapper { overflow-x: auto; overflow-y: auto; max-height: 620px; }
+    .table-wrapper::-webkit-scrollbar { width: 7px; height: 7px; }
+    .table-wrapper::-webkit-scrollbar-track { background: var(--bg); }
+    .table-wrapper::-webkit-scrollbar-thumb { background: #3A3835; border-radius: 4px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    .table-wrapper::-webkit-scrollbar-corner { background: var(--bg); }
     table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; table-layout: auto; }
     thead th { background: #242220; padding: 0.6rem 0.875rem; text-align: left; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; transition: background 0.1s, color 0.1s; position: sticky; top: 0; z-index: 2; }
     thead th.no-sort { cursor: default; }
@@ -377,9 +382,15 @@
                 <th onclick="sortCaixa('banker')">Banker</th>
                 <th onclick="sortCaixa('client_code')">Cód. Cliente</th>
                 <th onclick="sortCaixa('conta_btg')">Conta BTG</th>
-                <th onclick="sortCaixa('caixa')" style="text-align:right">Caixa</th>
-                <th onclick="sortCaixa('total')" style="text-align:right">AuM Total</th>
-                <th onclick="sortCaixa('pct')" style="text-align:right">% Caixa / AuM</th>
+                <th onclick="sortCaixa('classe')">Classe</th>
+                <th onclick="sortCaixa('nome')">Ativo</th>
+                <th onclick="sortCaixa('codigo')">Cód. Ativo</th>
+                <th onclick="sortCaixa('emissor')">Emissor</th>
+                <th onclick="sortCaixa('indexador')">Indexador</th>
+                <th onclick="sortCaixa('taxa')" style="text-align:right">Taxa</th>
+                <th onclick="sortCaixa('vencimento')">Vencimento</th>
+                <th onclick="sortCaixa('quantidade')" style="text-align:right">Qtd</th>
+                <th onclick="sortCaixa('valor_bruto')" style="text-align:right">Valor Bruto</th>
               </tr>
             </thead>
             <tbody id="caixa-body"></tbody>
@@ -414,7 +425,7 @@
     nome:4, codigo:5, emissor:6, indexador:7, taxa:8,
     vencimento:9, quantidade:10, valor_bruto:11
   };
-  const COL_IDX_CAIXA = { banker:0, client_code:1, conta_btg:2, caixa:3, total:4, pct:5 };
+  const COL_IDX_CAIXA = { banker:0, client_code:1, conta_btg:2, classe:3, nome:4, codigo:5, emissor:6, indexador:7, taxa:8, vencimento:9, quantidade:10, valor_bruto:11 };
 
   function classLabel(c) { return c === 'Liquidações Pendentes' ? 'Provisões' : (c || ''); }
 
@@ -713,7 +724,13 @@
 
   function caixaApplySort() {
     if (caixaSortCol === null) {
-      caixaRows.sort((a, b) => String(a.client_code||'').localeCompare(String(b.client_code||'')));
+      caixaRows.sort((a, b) => {
+        const cc = String(a.client_code||'').localeCompare(String(b.client_code||''));
+        if (cc !== 0) return cc;
+        const cl = String(a.classe||'').localeCompare(String(b.classe||''));
+        if (cl !== 0) return cl;
+        return String(a.nome||'').localeCompare(String(b.nome||''));
+      });
       return;
     }
     caixaRows.sort((a, b) => {
@@ -728,21 +745,7 @@
   }
 
   function renderCaixa() {
-    const totalByClient = {};
-    filteredRows.forEach(p => {
-      const k = p.conta_btg;
-      if (!totalByClient[k]) totalByClient[k] = { aum: 0, banker: p.banker, client_code: p.client_code };
-      totalByClient[k].aum += parseFloat(p.valor_bruto) || 0;
-    });
-    const caixaByClient = {};
-    filteredRows.filter(p => p.classe === 'Caixa').forEach(p => {
-      const k = p.conta_btg;
-      caixaByClient[k] = (caixaByClient[k] || 0) + (parseFloat(p.valor_bruto) || 0);
-    });
-    caixaRows = Object.entries(caixaByClient).map(([conta, caixa]) => {
-      const t = totalByClient[conta] || {};
-      return { conta_btg: conta, banker: t.banker||'', client_code: t.client_code||'', caixa, total: t.aum||0, pct: t.aum ? caixa / t.aum : 0 };
-    });
+    caixaRows = filteredRows.filter(p => p.nome === 'Caixa BTG');
     caixaApplySort();
     renderCaixaTable();
   }
@@ -752,20 +755,26 @@
       document.getElementById('caixa-table').style.display = 'none';
       document.getElementById('caixa-count').textContent = '';
       document.getElementById('caixa-state').style.display = 'block';
-      document.getElementById('caixa-state').innerHTML = `<div class="state-icon">🔍</div><div class="state-msg">Nenhuma posição de caixa encontrada.</div>`;
+      document.getElementById('caixa-state').innerHTML = `<div class="state-icon">🔍</div><div class="state-msg">Nenhuma posição "Caixa BTG" encontrada.</div>`;
       return;
     }
     document.getElementById('caixa-state').style.display = 'none';
     document.getElementById('caixa-table').style.display = 'table';
-    document.getElementById('caixa-count').textContent = ` — ${caixaRows.length.toLocaleString('pt-BR')} clientes`;
-    document.getElementById('caixa-body').innerHTML = caixaRows.map(r => `
+    document.getElementById('caixa-count').textContent = ` — ${caixaRows.length.toLocaleString('pt-BR')} linhas`;
+    document.getElementById('caixa-body').innerHTML = caixaRows.map(p => `
       <tr>
-        <td><span class="badge">${x(r.banker)}</span></td>
-        <td>${x(r.client_code)}</td>
-        <td class="td-muted td-mono">${x(r.conta_btg)}</td>
-        <td class="td-right"><strong>${fmtBRL(r.caixa)}</strong></td>
-        <td class="td-right td-muted">${fmtBRL(r.total)}</td>
-        <td class="td-right" style="color:var(--primary);font-weight:700">${(r.pct * 100).toFixed(2)}%</td>
+        <td><span class="badge">${x(p.banker)}</span></td>
+        <td>${x(p.client_code)}</td>
+        <td class="td-muted td-mono">${x(p.conta_btg)}</td>
+        <td>${x(classLabel(p.classe))}</td>
+        <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
+        <td class="td-muted td-mono">${x(p.codigo)}</td>
+        <td class="td-muted td-emissor" title="${p.emissor != null ? String(p.emissor).replace(/"/g,'&quot;') : ''}">${x(p.emissor)}</td>
+        <td class="td-indexador" title="${p.indexador != null ? String(p.indexador).replace(/"/g,'&quot;') : ''}">${x(p.indexador)}</td>
+        <td class="td-right td-muted">${fmtRate(p.taxa)}</td>
+        <td class="td-muted td-vencimento">${fmtDate(p.vencimento)}</td>
+        <td class="td-right td-muted">${fmtQty(p.quantidade)}</td>
+        <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
       </tr>`).join('');
     document.querySelectorAll('#caixa-table thead th').forEach((th, i) => {
       th.classList.remove('sort-asc', 'sort-desc');
