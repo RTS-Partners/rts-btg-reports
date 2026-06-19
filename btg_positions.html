@@ -108,7 +108,9 @@
     .td-muted { color: var(--text-muted); }
     .td-mono  { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.78rem; }
     .td-ativo   { max-width: 145px; overflow: hidden; text-overflow: ellipsis; }
-    .td-emissor { max-width: 80px;  overflow: hidden; text-overflow: ellipsis; }
+    .td-emissor   { max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+    .td-indexador { max-width: 65px;  overflow: hidden; text-overflow: ellipsis; }
+    .td-vencimento{ max-width: 65px;  overflow: hidden; text-overflow: ellipsis; }
     .badge { display: inline-block; padding: 0.18rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: rgba(196,163,90,.18); color: #C4A35A; letter-spacing: 0.03em; }
 
     /* PIE CHARTS */
@@ -607,9 +609,9 @@
         <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
         <td class="td-muted td-mono">${x(p.codigo)}</td>
         <td class="td-muted td-emissor" title="${p.emissor != null ? String(p.emissor).replace(/"/g,'&quot;') : ''}">${x(p.emissor)}</td>
-        <td>${x(p.indexador)}</td>
+        <td class="td-indexador" title="${p.indexador != null ? String(p.indexador).replace(/"/g,'&quot;') : ''}">${x(p.indexador)}</td>
         <td class="td-right td-muted">${fmtRate(p.taxa)}</td>
-        <td class="td-muted">${fmtDate(p.vencimento)}</td>
+        <td class="td-muted td-vencimento">${fmtDate(p.vencimento)}</td>
         <td class="td-right td-muted">${fmtQty(p.quantidade)}</td>
         <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
       </tr>`).join('');
