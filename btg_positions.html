@@ -484,8 +484,11 @@
       }
     });
     await loadHolidays();
-    const { data: { session } } = await sb.auth.getSession();
-    if (session && !appReady) { appReady = true; await enterApp(session.user); }
+    try {
+      const { data: { user }, error } = await sb.auth.getUser();
+      if (error) { await sb.auth.signOut(); }
+      else if (user && !appReady) { appReady = true; await enterApp(user); }
+    } catch (_) { await sb.auth.signOut(); }
     document.getElementById('inp-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
     document.getElementById('f-banker').addEventListener('change', rebuildClientDropdown);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllocDrilldown(); });
@@ -636,7 +639,11 @@
     if (!date) { alert('Selecione uma data.'); return; }
     setSearching(true); setStateLoading();
     try { allPositions = await fetchPositions(date); applyClientFilter(); }
-    catch (err) { setStateError('Erro ao carregar posições: ' + err.message); }
+    catch (err) {
+      if (err?.status === 401 || String(err?.message).toLowerCase().includes('jwt') || String(err?.message).toLowerCase().includes('token')) {
+        await sb.auth.signOut(); location.reload();
+      } else { setStateError('Erro ao carregar posições: ' + err.message); }
+    }
     finally { setSearching(false); }
   }
   async function fetchPositions(date) {
