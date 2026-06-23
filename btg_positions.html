@@ -402,7 +402,6 @@
           <div class="state-msg">Selecione uma data e clique em <strong>Buscar</strong> para carregar.</div>
         </div>
         <div id="mat-tbl-wrap" style="display:none; padding: 1.25rem;">
-<<<<<<< HEAD
           <div style="display:flex; gap: 2.5rem; align-items: flex-start; flex-wrap: wrap;">
             <div class="mat-table-wrap" style="flex: 1; min-width: 300px;">
               <table class="mat-year-table">
@@ -425,22 +424,6 @@
                 <canvas id="mat-bar-canvas"></canvas>
               </div>
             </div>
-=======
-          <div class="mat-table-wrap">
-            <table class="mat-year-table">
-              <thead><tr>
-                <th>Ano</th>
-                <th class="num">Valor Bruto</th>
-                <th class="num">% PL</th>
-              </tr></thead>
-              <tbody id="mat-tbl-body"></tbody>
-              <tfoot><tr>
-                <td><strong>Total</strong></td>
-                <td class="num" id="mat-tbl-total"></td>
-                <td class="num">100,0%</td>
-              </tr></tfoot>
-            </table>
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
           </div>
         </div>
       </div>
@@ -479,7 +462,7 @@
   let allPositions = [], filteredRows = [];
   let sortCol = null, sortDir = 'asc';
   let activeTab = 'positions';
-  let clsChart = null, bnkChart = null, matChart = null, allocChart = null;
+  let clsChart = null, bnkChart = null, matChart = null, matBarChart = null, allocChart = null;
   let classificacaoMap = {};   // codigo → {indexador, on_off, ...}
 
   const COL_IDX = {
@@ -668,13 +651,8 @@
       document.getElementById(p + '-state').style.display = 'block';
       document.getElementById(p + '-state').innerHTML = emptyPrompt();
     });
-<<<<<<< HEAD
     [clsChart, bnkChart, matChart, matBarChart].forEach(c => { if (c) c.destroy(); });
     clsChart = bnkChart = matChart = matBarChart = null;
-=======
-    [clsChart, bnkChart, matChart].forEach(c => { if (c) c.destroy(); });
-    clsChart = bnkChart = matChart = null;
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
     // reset new tabs
     document.getElementById('mat-tbl-wrap').style.display = 'none';
     document.getElementById('mat-tbl-state').style.display = 'block';
@@ -865,13 +843,9 @@
 
   /* RENDER: MATURITY TABLE BY YEAR */
   function renderMatTable() {
-<<<<<<< HEAD
     const onshoreAll = filteredRows.filter(p => isOnshore(p));
     const totalOnshore = onshoreAll.reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0);
     const rows = onshoreAll.filter(p => p.vencimento);
-=======
-    const rows = filteredRows.filter(p => isOnshore(p) && p.vencimento);
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
     if (!rows.length) {
       document.getElementById('mat-tbl-wrap').style.display = 'none';
       document.getElementById('mat-tbl-state').style.display = 'block';
@@ -883,26 +857,16 @@
       const yr = String(p.vencimento).slice(0, 4);
       yearMap[yr] = (yearMap[yr] || 0) + (parseFloat(p.valor_bruto) || 0);
     });
-<<<<<<< HEAD
     const totalWithVenc = Object.values(yearMap).reduce((a, b) => a + b, 0);
-=======
-    const total = Object.values(yearMap).reduce((a, b) => a + b, 0);
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
     const sorted = Object.entries(yearMap).sort((a, b) => a[0].localeCompare(b[0]));
     const maxVal = Math.max(...sorted.map(e => e[1]));
     document.getElementById('mat-tbl-state').style.display = 'none';
     document.getElementById('mat-tbl-wrap').style.display = 'block';
     document.getElementById('mat-tbl-count').textContent = ` — ${sorted.length} anos`;
-<<<<<<< HEAD
     document.getElementById('mat-tbl-total').textContent = fmtBRLPlain(totalWithVenc);
     document.getElementById('mat-tbl-total-pct').textContent = totalOnshore ? (totalWithVenc / totalOnshore * 100).toFixed(1) + '%' : '—';
     document.getElementById('mat-tbl-body').innerHTML = sorted.map(([yr, val]) => {
       const pct = totalOnshore ? val / totalOnshore * 100 : 0;
-=======
-    document.getElementById('mat-tbl-total').textContent = fmtBRLPlain(total);
-    document.getElementById('mat-tbl-body').innerHTML = sorted.map(([yr, val]) => {
-      const pct = total ? val / total * 100 : 0;
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
       const barPct = maxVal ? val / maxVal * 100 : 0;
       return `<tr>
         <td><strong>${yr}</strong></td>
@@ -915,7 +879,6 @@
         </td>
       </tr>`;
     }).join('');
-<<<<<<< HEAD
 
     // Bar chart — earliest 5 years
     const first5 = sorted.slice(0, 5);
@@ -966,8 +929,6 @@
         }
       }
     });
-=======
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
   }
 
   /* RENDER: ASSET ALLOCATION 12 MONTHS STACKED BAR */
@@ -978,11 +939,7 @@
 
     const selDate = document.getElementById('f-date').value;
     if (!selDate) return;
-<<<<<<< HEAD
     const days = buildLastNWorkingDays(selDate, 5);
-=======
-    const days = buildLastNDays(selDate, 5);
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
 
     const banker = document.getElementById('f-banker').value;
     const contaBtg = document.getElementById('f-client').value;
@@ -1040,19 +997,10 @@
       const color = isUnclass ? '#FF3B3B' : PALETTE[i % PALETTE.length];
       return {
         label: idx,
-<<<<<<< HEAD
         data: datesWithData.map(dt =>
           allocData[dt].filter(p => resolveIndexador(p) === idx)
             .reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0)
         ),
-=======
-        data: datesWithData.map(dt => {
-          const total = totals[dt] || 1;
-          const sum = allocData[dt].filter(p => resolveIndexador(p) === idx)
-            .reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0);
-          return parseFloat((sum / total * 100).toFixed(2));
-        }),
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
         backgroundColor: color,
         borderColor: '#1C1B1A',
         borderWidth: 1,
@@ -1070,20 +1018,13 @@
     if (allocChart) { allocChart.destroy(); allocChart = null; }
 
     const ctx = document.getElementById('alloc-canvas');
-<<<<<<< HEAD
     ctx.style.width = '100%'; ctx.style.height = Math.max(220, datesWithData.length * 68) + 'px';
-=======
-    ctx.style.width = '100%'; ctx.style.height = '420px';
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
 
     allocChart = new Chart(ctx, {
       type: 'bar',
       data: { labels, datasets },
       options: {
-<<<<<<< HEAD
         indexAxis: 'y',
-=======
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
         responsive: true,
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
@@ -1092,22 +1033,17 @@
           tooltip: {
             callbacks: {
               title: items => items[0].label,
-<<<<<<< HEAD
               label: ctx => {
                 const dt = datesWithData[ctx.dataIndex];
                 const total = totals[dt] || 1;
                 const pct = (ctx.raw / total * 100).toFixed(1);
                 return ` ${ctx.dataset.label}: ${fmtBRLPlain(ctx.raw)} (${pct}%)`;
               },
-=======
-              label: ctx => ` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%`,
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
               afterBody: items => [`Total: ${fmtBRLPlain(totals[datesWithData[items[0].dataIndex]])}`]
             }
           }
         },
         scales: {
-<<<<<<< HEAD
           x: {
             stacked: true,
             grid: { color: '#2E2C2A' },
@@ -1127,13 +1063,6 @@
             stacked: true,
             grid: { display: false },
             ticks: { color: '#E8E6E0', font: { size: 12 } }
-=======
-          x: { stacked: true, grid: { color: '#2E2C2A' }, ticks: { color: '#7A7773', font: { size: 12 } } },
-          y: {
-            stacked: true, min: 0, max: 100,
-            grid: { color: '#2E2C2A' },
-            ticks: { color: '#7A7773', font: { size: 11 }, callback: v => v + '%' }
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
           }
         }
       }
@@ -1151,7 +1080,6 @@
     }).join('');
   }
 
-<<<<<<< HEAD
   // Build list of the last n working days (Mon–Fri, excluding tb_feriados) up to and including selDateStr
   function buildLastNWorkingDays(selDateStr, n) {
     const result = [];
@@ -1163,17 +1091,6 @@
       if (dow !== 0 && dow !== 6 && !holidays.has(iso)) result.unshift(iso);
       d.setDate(d.getDate() - 1);
       safety++;
-=======
-  // Build list of the last n calendar dates up to and including selDateStr
-  // (uses the dates that actually have data in the DB — we just pass candidates and skip empty ones)
-  function buildLastNDays(selDateStr, n) {
-    const result = [];
-    const sel = new Date(selDateStr + 'T12:00:00');
-    for (let i = 0; i < n; i++) {
-      const d = new Date(sel);
-      d.setDate(d.getDate() - i);
-      result.unshift(d.toISOString().split('T')[0]);
->>>>>>> ec8aaa29386c9a703ef2c344a1d4864cea93f8eb
     }
     return result;
   }
