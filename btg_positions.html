@@ -1938,7 +1938,7 @@
       a.valor_bruto += parseFloat(p.valor_bruto) || 0;
       a.quantidade  += parseFloat(p.quantidade)  || 0;
     });
-    const rows = Array.from(aggMap.values());
+    const rows = Array.from(aggMap.values()).filter(r => r.liquidez === 0);
     rows.sort((a, b) => {
       const la = a.liquidez, lb = b.liquidez;
       if (la === null && lb === null) return 0;
