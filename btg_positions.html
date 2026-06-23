@@ -530,8 +530,9 @@
   /* ENTER APP */
   async function loadLatestDate() {
     try {
-      const { data } = await sb.from('tb_btg_position').select('data').order('data', { ascending: false }).limit(1).maybeSingle();
-      return data?.data || null;
+      const { data, error } = await sb.from('tb_btg_position').select('data').order('data', { ascending: false }).limit(1);
+      if (error || !data || !data.length) return null;
+      return data[0].data || null;
     } catch (_) { return null; }
   }
 
@@ -549,6 +550,7 @@
     defaultDate = latestDate || lastWorkingDay();
     document.getElementById('f-date').value = defaultDate;
     buildBankerDropdown(); rebuildClientDropdown();
+    applyFilters();
   }
 
   /* CLIENTS */
