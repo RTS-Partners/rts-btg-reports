@@ -471,7 +471,7 @@
                   <th class="no-sort">Indexador</th>
                   <th class="no-sort" style="text-align:right">Anterior</th>
                   <th class="no-sort" style="text-align:right">Atual</th>
-                  <th class="no-sort" style="text-align:right">Δ Qtd</th>
+                  <th class="no-sort" style="text-align:right">Δ Valor</th>
                 </tr>
               </thead>
               <tbody id="movs-body"></tbody>
@@ -1737,9 +1737,11 @@
           classe:       p.classe || '',
           indexador:    resolveIndexador(p),
           totalQtd:     0,
+          totalBruto:   0,
         };
       }
-      map[assetKey].totalQtd += parseFloat(p.quantidade) || 0;
+      map[assetKey].totalQtd   += parseFloat(p.quantidade)   || 0;
+      map[assetKey].totalBruto += parseFloat(p.valor_bruto)  || 0;
     });
     return map;
   }
@@ -1789,7 +1791,7 @@
 
       await Promise.all(prevDays.map(async dt => {
         let q = sb.from('tb_btg_position')
-          .select('conta_btg, codigo, nome, quantidade, indexador, classe, taxa, vencimento')
+          .select('conta_btg, codigo, nome, quantidade, valor_bruto, indexador, classe, taxa, vencimento')
           .eq('data', dt);
         if (contaList && contaList.length > 0) q = q.in('conta_btg', contaList);
         const PAGE = 1000; let from = 0, raw = [];
@@ -1837,6 +1839,8 @@
 
           if (Math.abs(delta) > 0) {
             const info = currAgg[key] || prevAgg[key];
+            const prevBruto = (prevAgg[key] || { totalBruto: 0 }).totalBruto;
+            const currBruto = (currAgg[key] || { totalBruto: 0 }).totalBruto;
             rows.push({
               periodLabel,
               pairIdx:      i,
@@ -1848,9 +1852,9 @@
               codigo:       info.codigo,
               classe:       info.classe,
               indexador:    info.indexador,
-              prevQtd:      prev.totalQtd,
-              currQtd:      curr.totalQtd,
-              delta,
+              prevBruto,
+              currBruto,
+              deltaBruto:   currBruto - prevBruto,
             });
           }
         });
@@ -1858,7 +1862,7 @@
 
       rows.sort((a, b) => {
         if (b.pairIdx !== a.pairIdx) return b.pairIdx - a.pairIdx;
-        return Math.abs(b.delta) - Math.abs(a.delta);
+        return Math.abs(b.deltaBruto) - Math.abs(a.deltaBruto);
       });
 
       const [fy, fm, fd] = days[0].split('-');
@@ -1876,7 +1880,7 @@
       document.getElementById('movs-dates').textContent  = rangeLabel;
 
       document.getElementById('movs-body').innerHTML = rows.map(c => {
-        const deltaClass = c.delta >= 0 ? 'td-positive' : 'td-negative';
+        const deltaClass = c.deltaBruto >= 0 ? 'td-positive' : 'td-negative';
         return `<tr>
           <td class="td-muted td-mono" style="white-space:nowrap">${x(c.periodLabel)}</td>
           <td><span class="badge">${x(c.client_code)}</span></td>
@@ -1885,9 +1889,9 @@
           <td>${x(c.nome_cliente)}</td>
           <td class="td-ativo" title="${c.nome != null ? String(c.nome).replace(/"/g,'&quot;') : ''}">${x(c.nome)}</td>
           <td class="td-muted">${x(c.indexador)}</td>
-          <td class="td-right td-muted">${fmtQty(c.prevQtd)}</td>
-          <td class="td-right">${fmtQty(c.currQtd)}</td>
-          <td class="td-right ${deltaClass}"><strong>${fmtQtyDelta(c.delta)}</strong></td>
+          <td class="td-right td-muted">${fmtBRLPlain(c.prevBruto)}</td>
+          <td class="td-right">${fmtBRLPlain(c.currBruto)}</td>
+          <td class="td-right ${deltaClass}"><strong>${fmtDelta(c.deltaBruto)}</strong></td>
         </tr>`;
       }).join('');
 
