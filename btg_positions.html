@@ -478,12 +478,12 @@
     sb = supabase.createClient(SB_URL, SB_KEY);
     Chart.defaults.color = '#7A7773';
     Chart.defaults.borderColor = '#2E2C2A';
-    await loadHolidays();
     sb.auth.onAuthStateChange(async (event, session) => {
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session && !appReady) {
         appReady = true; await enterApp(session.user);
       }
     });
+    await loadHolidays();
     const { data: { session } } = await sb.auth.getSession();
     if (session && !appReady) { appReady = true; await enterApp(session.user); }
     document.getElementById('inp-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
