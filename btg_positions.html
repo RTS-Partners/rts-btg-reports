@@ -164,9 +164,9 @@
     .alloc-legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--text-muted); }
     .alloc-legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-    /* ALLOC DRILL-DOWN MODAL */
-    .alloc-drill-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
-    .alloc-drill-overlay.open { display: flex; }
+    /* ALLOC / MAT DRILL-DOWN MODAL */
+    .alloc-drill-overlay, .mat-drill-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .alloc-drill-overlay.open, .mat-drill-overlay.open { display: flex; }
     .alloc-drill-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-lg); width: 100%; max-width: 780px; max-height: 82vh; display: flex; flex-direction: column; overflow: hidden; }
     .alloc-drill-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-shrink: 0; }
     .alloc-drill-title { font-size: 0.95rem; font-weight: 700; }
@@ -447,6 +447,35 @@
   </div>
 </div>
 
+<!-- MAT DRILL-DOWN MODAL -->
+<div id="mat-drill-overlay" class="mat-drill-overlay" onclick="if(event.target===this)closeMatDrilldown()">
+  <div class="alloc-drill-panel">
+    <div class="alloc-drill-header">
+      <div>
+        <div class="alloc-drill-title" id="mat-drill-title"></div>
+        <div class="alloc-drill-sub" id="mat-drill-sub"></div>
+      </div>
+      <button class="alloc-drill-close" onclick="closeMatDrilldown()">✕</button>
+    </div>
+    <div class="alloc-drill-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Ativo</th>
+            <th>Código</th>
+            <th>Emissor</th>
+            <th class="num">Vencimento</th>
+            <th class="num">Valor Bruto</th>
+            <th class="num">%</th>
+          </tr>
+        </thead>
+        <tbody id="mat-drill-body"></tbody>
+      </table>
+    </div>
+    <div class="alloc-drill-hint">Clique fora do painel ou pressione ESC para fechar.</div>
+  </div>
+</div>
+
 <script>
   const SB_URL = 'https://gmvraqrvovvpuxmqgkaz.supabase.co';
   const SB_KEY = 'sb_publishable_fLL0TQYYCP7frJIqf-S49g_3Q2LNDUI';
@@ -493,7 +522,7 @@
     document.getElementById('f-date').addEventListener('change', applyFilters);
     document.getElementById('f-banker').addEventListener('change', rebuildClientDropdown);
     document.getElementById('f-client').addEventListener('change', applyClientFilter);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllocDrilldown(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAllocDrilldown(); closeMatDrilldown(); } });
   });
 
   /* HOLIDAYS */
@@ -930,6 +959,19 @@
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
+        onClick: (event, _elements, chart) => {
+          const nearest = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
+          if (!nearest.length) return;
+          const { index } = nearest[0];
+          const yr = first5[index]?.[0];
+          if (!yr) return;
+          const color = PALETTE[index % PALETTE.length];
+          const yearRows = rows.filter(p => String(p.vencimento).slice(0, 4) === yr);
+          openMatDrilldown(yr, yearRows, totalOnshore, color);
+        },
+        onHover: (event, activeEls) => {
+          event.native.target.style.cursor = activeEls.length ? 'pointer' : 'default';
+        },
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -1290,6 +1332,39 @@
 
   function closeAllocDrilldown() {
     document.getElementById('alloc-drill-overlay').classList.remove('open');
+  }
+
+  /* MAT DRILL-DOWN */
+  function openMatDrilldown(yr, rows, plTotal, color) {
+    const aggMap = new Map();
+    rows.forEach(p => {
+      const key = (p.codigo || '') + '|' + (p.nome || '');
+      if (!aggMap.has(key)) aggMap.set(key, { nome: p.nome || '', codigo: p.codigo || '', emissor: p.emissor || '', vencimento: p.vencimento || '', valor_bruto: 0 });
+      aggMap.get(key).valor_bruto += parseFloat(p.valor_bruto) || 0;
+    });
+    const assets = [...aggMap.values()].sort((a, b) => b.valor_bruto - a.valor_bruto);
+    const segTotal = assets.reduce((s, a) => s + a.valor_bruto, 0);
+    const dot = `<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${color};margin-right:6px;vertical-align:middle;flex-shrink:0"></span>`;
+    document.getElementById('mat-drill-title').innerHTML = `${dot}Vencimentos ${x(yr)} <span style="font-weight:400;color:var(--text-muted)">— ${assets.length} ativo${assets.length !== 1 ? 's' : ''}</span>`;
+    document.getElementById('mat-drill-sub').textContent = `Total: ${fmtBRLPlain(segTotal)}${plTotal ? '  ·  ' + (segTotal / plTotal * 100).toFixed(1) + '% do PL Onshore' : ''}`;
+    document.getElementById('mat-drill-body').innerHTML = assets.map(a => {
+      const pct = segTotal ? (a.valor_bruto / segTotal * 100).toFixed(1) + '%' : '—';
+      const parts = String(a.vencimento).split('-');
+      const vencLabel = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : (a.vencimento || '—');
+      return `<tr>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${String(a.nome).replace(/"/g,'&quot;')}">${x(a.nome)}</td>
+        <td class="td-muted td-mono">${x(a.codigo)}</td>
+        <td class="td-muted" style="max-width:180px;overflow:hidden;text-overflow:ellipsis" title="${String(a.emissor).replace(/"/g,'&quot;')}">${x(a.emissor)}</td>
+        <td class="td-right td-muted td-mono">${vencLabel}</td>
+        <td class="td-right"><strong>${fmtBRLPlain(a.valor_bruto)}</strong></td>
+        <td class="td-right td-muted">${pct}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('mat-drill-overlay').classList.add('open');
+  }
+
+  function closeMatDrilldown() {
+    document.getElementById('mat-drill-overlay').classList.remove('open');
   }
 </script>
 </body>
