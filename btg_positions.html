@@ -859,13 +859,18 @@
     });
     const totalWithVenc = Object.values(yearMap).reduce((a, b) => a + b, 0);
     const sorted = Object.entries(yearMap).sort((a, b) => a[0].localeCompare(b[0]));
-    const maxVal = Math.max(...sorted.map(e => e[1]));
+    const first5 = sorted.slice(0, 5);
+    const rest = sorted.slice(5);
+    const grouped = rest.length > 0
+      ? [...first5, [rest[0][0] + '+', rest.reduce((s, [, v]) => s + v, 0)]]
+      : first5;
+    const maxVal = Math.max(...grouped.map(e => e[1]));
     document.getElementById('mat-tbl-state').style.display = 'none';
     document.getElementById('mat-tbl-wrap').style.display = 'block';
     document.getElementById('mat-tbl-count').textContent = ` — ${sorted.length} anos`;
     document.getElementById('mat-tbl-total').textContent = fmtBRLPlain(totalWithVenc);
     document.getElementById('mat-tbl-total-pct').textContent = totalOnshore ? (totalWithVenc / totalOnshore * 100).toFixed(1) + '%' : '—';
-    document.getElementById('mat-tbl-body').innerHTML = sorted.map(([yr, val]) => {
+    document.getElementById('mat-tbl-body').innerHTML = grouped.map(([yr, val]) => {
       const pct = totalOnshore ? val / totalOnshore * 100 : 0;
       const barPct = maxVal ? val / maxVal * 100 : 0;
       return `<tr>
