@@ -506,11 +506,10 @@
                   <th>Ativo</th>
                   <th>Cód. Ativo</th>
                   <th>Emissor</th>
-                  <th>Indexador</th>
-                  <th style="text-align:right">Taxa</th>
                   <th>Vencimento</th>
                   <th style="text-align:right">Liquidez (dias)</th>
                   <th style="text-align:right">Valor Bruto</th>
+                  <th style="text-align:right">%PL</th>
                 </tr>
               </thead>
               <tbody id="liq-body"></tbody>
@@ -1938,6 +1937,10 @@
       a.valor_bruto += parseFloat(p.valor_bruto) || 0;
       a.quantidade  += parseFloat(p.quantidade)  || 0;
     });
+    const contaTotals = new Map();
+    for (const r of aggMap.values()) {
+      contaTotals.set(r.conta_btg, (contaTotals.get(r.conta_btg) || 0) + r.valor_bruto);
+    }
     const rows = Array.from(aggMap.values()).filter(r => r.liquidez === 0);
     rows.sort((a, b) => {
       const la = a.liquidez, lb = b.liquidez;
@@ -1954,6 +1957,9 @@
     document.getElementById('liq-count').textContent = ` — ${rows.length.toLocaleString('pt-BR')} linhas`;
     document.getElementById('liq-body').innerHTML = rows.map(p => {
       const liqDisplay = p.liquidez === null ? '<span class="td-muted">—</span>' : p.liquidez.toLocaleString('pt-BR');
+      const contaTotal = contaTotals.get(p.conta_btg) || 0;
+      const pct = contaTotal ? (p.valor_bruto / contaTotal * 100) : 0;
+      const pctDisplay = pct.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
       return `<tr>
         <td><span class="badge">${x(p.client_code)}</span></td>
         <td>${x(p.conta)}</td>
@@ -1962,11 +1968,10 @@
         <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
         <td class="td-muted td-mono">${x(p.codigo)}</td>
         <td class="td-muted td-emissor" title="${p._emissor != null ? String(p._emissor).replace(/"/g,'&quot;') : ''}">${x(p._emissor)}</td>
-        <td class="td-indexador">${x(resolveIndexador(p))}</td>
-        <td class="td-right td-muted">${fmtRate(p.taxa)}</td>
         <td class="td-muted td-vencimento">${fmtDate(p.vencimento)}</td>
         <td class="td-right td-muted">${liqDisplay}</td>
         <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
+        <td class="td-right td-muted">${pctDisplay}</td>
       </tr>`;
     }).join('');
   }
