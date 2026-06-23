@@ -421,16 +421,17 @@
             <table id="mud-table">
               <thead>
                 <tr>
+                  <th class="no-sort">Período</th>
                   <th class="no-sort">Cód. Cliente</th>
                   <th class="no-sort">Conta</th>
                   <th class="no-sort">Conta BTG</th>
-                  <th class="no-sort">Nome</th>
-                  <th class="no-sort" style="text-align:right">Bruto D-1</th>
-                  <th class="no-sort" style="text-align:right">Bruto D</th>
-                  <th class="no-sort" style="text-align:right">Δ Bruto</th>
-                  <th class="no-sort" style="text-align:right">Pós-Fix. D-1</th>
-                  <th class="no-sort" style="text-align:right">Pós-Fix. D</th>
-                  <th class="no-sort" style="text-align:right">Δ Pós-Fix.</th>
+                  <th class="no-sort">Nome Cliente</th>
+                  <th class="no-sort">Ativo</th>
+                  <th class="no-sort">Indexador</th>
+                  <th class="no-sort" style="text-align:right">Anterior</th>
+                  <th class="no-sort" style="text-align:right">Atual</th>
+                  <th class="no-sort" style="text-align:right">Δ Valor</th>
+                  <th class="no-sort">Tipo</th>
                 </tr>
               </thead>
               <tbody id="mud-body"></tbody>
@@ -1421,25 +1422,31 @@
     return (n >= 0 ? '+' : '') + abs;
   }
 
-  function aggregateClientTotals(rows) {
+  function aggregateAssetTotals(rows) {
     const map = {};
     rows.forEach(p => {
-      const key = p.conta_btg;
-      if (!map[key]) {
-        const ci = clientMap[key] || {};
-        map[key] = {
-          conta_btg: key,
-          client_code: ci.client_code || p.client_code || '',
-          conta: ci.conta || p.conta || '',
+      const assetKey = [
+        p.conta_btg || '',
+        p.nome || '',
+        p.taxa != null ? p.taxa : '',
+        p.vencimento || ''
+      ].join('\x00');
+      if (!map[assetKey]) {
+        const ci = clientMap[p.conta_btg] || {};
+        map[assetKey] = {
+          conta_btg:    p.conta_btg || '',
+          client_code:  ci.client_code || p.client_code || '',
+          conta:        ci.conta || p.conta || '',
           nome_cliente: ci.nome || '',
-          banker: ci.banker || p.banker || '',
-          totalBruto: 0,
-          posFixado: 0,
+          banker:       ci.banker || p.banker || '',
+          nome:         p.nome || '',
+          codigo:       p.codigo || '',
+          classe:       p.classe || '',
+          indexador:    resolveIndexador(p),
+          totalBruto:   0,
         };
       }
-      const val = parseFloat(p.valor_bruto) || 0;
-      map[key].totalBruto += val;
-      if (resolveIndexador(p) === 'Pós-Fixado') map[key].posFixado += val;
+      map[assetKey].totalBruto += parseFloat(p.valor_bruto) || 0;
     });
     return map;
   }
@@ -1447,7 +1454,7 @@
   async function renderMudancas() {
     const mudStateEl = document.getElementById('mud-state');
     const mudWrapEl  = document.getElementById('mud-wrap');
-    mudStateEl.innerHTML = `<div class="spinner"></div><div class="state-msg">Comparando com dia útil anterior…</div>`;
+    mudStateEl.innerHTML = `<div class="spinner"></div><div class="state-msg">Buscando últimos 5 dias úteis…</div>`;
     mudStateEl.style.display = 'block';
     mudWrapEl.style.display = 'none';
 
@@ -1461,13 +1468,11 @@
       return;
     }
 
-    const twodays = buildLastNWorkingDays(selDate, 2);
-    if (twodays.length < 2) {
-      mudStateEl.innerHTML = `<div class="state-icon">🔍</div><div class="state-msg">Não foi possível encontrar o dia útil anterior a ${selDate}.</div>`;
+    const days = buildLastNWorkingDays(selDate, 5);
+    if (days.length < 2) {
+      mudStateEl.innerHTML = `<div class="state-icon">🔍</div><div class="state-msg">Não foi possível encontrar dias úteis anteriores a ${selDate}.</div>`;
       return;
     }
-    const prevDate = twodays[0];
-    const currDate = twodays[1];
 
     try {
       const banker   = document.getElementById('f-banker').value;
@@ -1479,94 +1484,121 @@
         contaList = allClients.filter(c => c.banker === banker && c.conta_btg).map(c => c.conta_btg);
       }
 
-      let q = sb.from('tb_btg_position')
-        .select('conta_btg, codigo, nome, valor_bruto, indexador, classe')
-        .eq('data', prevDate);
-      if (contaList && contaList.length > 0) q = q.in('conta_btg', contaList);
+      // Fetch all days except selDate (already in filteredRows) in parallel
+      const prevDays = days.slice(0, days.length - 1); // D-4 through D-1
+      const dayDataMap = {};
 
-      const PAGE = 1000; let from = 0, prevRaw = [];
-      while (true) {
-        const { data, error } = await q.range(from, from + PAGE - 1);
-        if (error) throw error;
-        if (!data || data.length === 0) break;
-        prevRaw = prevRaw.concat(data);
-        if (data.length < PAGE) break;
-        from += PAGE;
-      }
-
-      const prevMapped = prevRaw.map(p => {
-        const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg;
-        const ci  = clientMap[key] || {};
-        return { ...p, conta_btg: key, banker: ci.banker || '' };
-      }).filter(p => p.banker);
-
-      const currMap = aggregateClientTotals(filteredRows);
-      const prevMap = aggregateClientTotals(prevMapped);
-
-      const THRESHOLD = 300000;
-      const allKeys   = new Set([...Object.keys(currMap), ...Object.keys(prevMap)]);
-      const changes   = [];
-
-      allKeys.forEach(key => {
-        const curr = currMap[key] || { totalBruto: 0, posFixado: 0 };
-        const prev = prevMap[key] || { totalBruto: 0, posFixado: 0 };
-        const deltaBruto     = curr.totalBruto - prev.totalBruto;
-        const deltaPosFixado = curr.posFixado   - prev.posFixado;
-
-        if (Math.abs(deltaBruto) >= THRESHOLD || Math.abs(deltaPosFixado) >= THRESHOLD) {
-          const info = currMap[key] || prevMap[key];
-          changes.push({
-            conta_btg:     key,
-            client_code:   info.client_code,
-            conta:         info.conta,
-            nome_cliente:  info.nome_cliente,
-            banker:        info.banker,
-            prevBruto:     prev.totalBruto,
-            currBruto:     curr.totalBruto,
-            deltaBruto,
-            prevPosFixado: prev.posFixado,
-            currPosFixado: curr.posFixado,
-            deltaPosFixado,
-          });
+      await Promise.all(prevDays.map(async dt => {
+        let q = sb.from('tb_btg_position')
+          .select('conta_btg, codigo, nome, valor_bruto, indexador, classe, taxa, vencimento')
+          .eq('data', dt);
+        if (contaList && contaList.length > 0) q = q.in('conta_btg', contaList);
+        const PAGE = 1000; let from = 0, raw = [];
+        while (true) {
+          const { data, error } = await q.range(from, from + PAGE - 1);
+          if (error) throw error;
+          if (!data || data.length === 0) break;
+          raw = raw.concat(data);
+          if (data.length < PAGE) break;
+          from += PAGE;
         }
+        const mapped = raw.map(p => {
+          const key = p.conta_btg ? p.conta_btg.trim() : p.conta_btg;
+          const ci  = clientMap[key] || {};
+          return { ...p, conta_btg: key, banker: ci.banker || '' };
+        }).filter(p => p.banker);
+        if (mapped.length > 0) dayDataMap[dt] = mapped;
+      }));
+
+      // Day D uses filteredRows
+      dayDataMap[selDate] = filteredRows;
+
+      // Build asset-level aggregated maps for each day that has data
+      const aggByDay = {};
+      days.forEach(dt => {
+        if (dayDataMap[dt]) aggByDay[dt] = aggregateAssetTotals(dayDataMap[dt]);
       });
 
-      changes.sort((a, b) =>
-        Math.max(Math.abs(b.deltaBruto), Math.abs(b.deltaPosFixado)) -
-        Math.max(Math.abs(a.deltaBruto), Math.abs(a.deltaPosFixado))
-      );
+      // Check all consecutive pairs (oldest→newest)
+      const THRESHOLD = 300000;
+      const rows = [];
 
-      const [py, pm, pd] = prevDate.split('-');
-      const [cy, cm, cd] = currDate.split('-');
-      const prevLabel = `${pd}/${pm}/${py}`;
-      const currLabel = `${cd}/${cm}/${cy}`;
+      for (let i = 0; i < days.length - 1; i++) {
+        const dPrev = days[i];
+        const dCurr = days[i + 1];
+        if (!aggByDay[dPrev] && !aggByDay[dCurr]) continue;
+        const prevAgg = aggByDay[dPrev] || {};
+        const currAgg = aggByDay[dCurr] || {};
+        const allKeys = new Set([...Object.keys(prevAgg), ...Object.keys(currAgg)]);
 
-      if (!changes.length) {
-        mudStateEl.innerHTML = `<div class="state-icon">✓</div><div class="state-msg">Nenhuma variação igual ou superior a R$ 300.000 entre ${prevLabel} e ${currLabel}.</div>`;
+        const [py, pm, pd] = dPrev.split('-');
+        const [cy, cm, cd] = dCurr.split('-');
+        const periodLabel = `${pd}/${pm} → ${cd}/${cm}`;
+
+        allKeys.forEach(key => {
+          const prev   = prevAgg[key] || { totalBruto: 0 };
+          const curr   = currAgg[key] || { totalBruto: 0 };
+          const delta  = curr.totalBruto - prev.totalBruto;
+
+          if (Math.abs(delta) >= THRESHOLD) {
+            const info      = currAgg[key] || prevAgg[key];
+            const isPosFixado = info.indexador === 'Pós-Fixado';
+            rows.push({
+              periodLabel,
+              pairIdx:      i,
+              conta_btg:    info.conta_btg,
+              client_code:  info.client_code,
+              conta:        info.conta,
+              nome_cliente: info.nome_cliente,
+              nome:         info.nome,
+              codigo:       info.codigo,
+              classe:       info.classe,
+              indexador:    info.indexador,
+              isPosFixado,
+              prevBruto:    prev.totalBruto,
+              currBruto:    curr.totalBruto,
+              delta,
+            });
+          }
+        });
+      }
+
+      // Sort: latest pair first, then by abs delta within each pair
+      rows.sort((a, b) => {
+        if (b.pairIdx !== a.pairIdx) return b.pairIdx - a.pairIdx;
+        return Math.abs(b.delta) - Math.abs(a.delta);
+      });
+
+      const [fy, fm, fd] = days[0].split('-');
+      const [ly, lm, ld] = days[days.length - 1].split('-');
+      const rangeLabel = `${fd}/${fm}/${fy} — ${ld}/${lm}/${ly}`;
+
+      if (!rows.length) {
+        mudStateEl.innerHTML = `<div class="state-icon">✓</div><div class="state-msg">Nenhuma variação igual ou superior a R$ 300.000 nos últimos ${days.length} dias úteis (${rangeLabel}).</div>`;
         return;
       }
 
       mudStateEl.style.display = 'none';
       mudWrapEl.style.display  = 'block';
-      document.getElementById('mud-count').textContent = ` — ${changes.length} cliente${changes.length !== 1 ? 's' : ''}`;
-      document.getElementById('mud-dates').textContent  = `${prevLabel} → ${currLabel}`;
+      document.getElementById('mud-count').textContent = ` — ${rows.length} ocorrência${rows.length !== 1 ? 's' : ''}`;
+      document.getElementById('mud-dates').textContent  = rangeLabel;
 
-      document.getElementById('mud-body').innerHTML = changes.map(c => {
-        const brutoSig   = Math.abs(c.deltaBruto) >= THRESHOLD;
-        const posFixSig  = Math.abs(c.deltaPosFixado) >= THRESHOLD;
-        const brutoClass = brutoSig  ? (c.deltaBruto     >= 0 ? 'td-positive' : 'td-negative') : 'td-muted';
-        const pfClass    = posFixSig ? (c.deltaPosFixado >= 0 ? 'td-positive' : 'td-negative') : 'td-muted';
+      document.getElementById('mud-body').innerHTML = rows.map(c => {
+        const deltaClass = c.delta >= 0 ? 'td-positive' : 'td-negative';
+        const tipoLabel  = c.isPosFixado ? 'Pós-Fixado' : 'Bruto';
+        const tipoColor  = c.isPosFixado ? 'color:#5A9BD4' : '';
         return `<tr>
+          <td class="td-muted td-mono" style="white-space:nowrap">${x(c.periodLabel)}</td>
           <td><span class="badge">${x(c.client_code)}</span></td>
           <td>${x(c.conta)}</td>
           <td class="td-muted td-mono">${x(c.conta_btg)}</td>
           <td>${x(c.nome_cliente)}</td>
+          <td class="td-ativo" title="${c.nome != null ? String(c.nome).replace(/"/g,'&quot;') : ''}">${x(c.nome)}</td>
+          <td class="td-muted">${x(c.indexador)}</td>
           <td class="td-right td-muted">${fmtBRLPlain(c.prevBruto)}</td>
           <td class="td-right">${fmtBRLPlain(c.currBruto)}</td>
-          <td class="td-right ${brutoClass}"><strong>${fmtDelta(c.deltaBruto)}</strong></td>
-          <td class="td-right td-muted">${fmtBRLPlain(c.prevPosFixado)}</td>
-          <td class="td-right">${fmtBRLPlain(c.currPosFixado)}</td>
-          <td class="td-right ${pfClass}"><strong>${fmtDelta(c.deltaPosFixado)}</strong></td>
+          <td class="td-right ${deltaClass}"><strong>${fmtDelta(c.delta)}</strong></td>
+          <td style="white-space:nowrap;${tipoColor}">${tipoLabel}</td>
         </tr>`;
       }).join('');
 
