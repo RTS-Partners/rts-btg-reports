@@ -459,6 +459,7 @@
   ];
 
   let sb, appReady = false, clientMap = {}, allClients = [], holidays = new Set();
+  let defaultDate = null;
   let allPositions = [], filteredRows = [];
   let sortCol = null, sortDir = 'asc';
   let activeTab = 'positions';
@@ -524,12 +525,20 @@
   async function doLogout() { await sb.auth.signOut(); location.reload(); }
 
   /* ENTER APP */
+  async function loadLatestDate() {
+    try {
+      const { data } = await sb.from('tb_btg_position').select('data').order('data', { ascending: false }).limit(1).maybeSingle();
+      return data?.data || null;
+    } catch (_) { return null; }
+  }
+
   async function enterApp(user) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-screen').style.display = 'block';
     document.getElementById('hdr-email').textContent = user.email;
-    document.getElementById('f-date').value = lastWorkingDay();
-    await Promise.all([loadClients(), loadClassificacao()]);
+    const [latestDate] = await Promise.all([loadLatestDate(), loadClients(), loadClassificacao()]);
+    defaultDate = latestDate || lastWorkingDay();
+    document.getElementById('f-date').value = defaultDate;
     buildBankerDropdown(); rebuildClientDropdown();
   }
 
@@ -639,7 +648,7 @@
     sortApply(); renderSummary(); renderTab(activeTab);
   }
   function clearFilters() {
-    document.getElementById('f-date').value = lastWorkingDay();
+    document.getElementById('f-date').value = defaultDate || lastWorkingDay();
     document.getElementById('f-banker').value = '';
     rebuildClientDropdown();
     allPositions = []; filteredRows = [];
