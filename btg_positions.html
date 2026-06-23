@@ -490,7 +490,9 @@
       else if (user && !appReady) { appReady = true; await enterApp(user); }
     } catch (_) { await sb.auth.signOut(); }
     document.getElementById('inp-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('f-date').addEventListener('change', applyFilters);
     document.getElementById('f-banker').addEventListener('change', rebuildClientDropdown);
+    document.getElementById('f-client').addEventListener('change', applyClientFilter);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllocDrilldown(); });
   });
 
