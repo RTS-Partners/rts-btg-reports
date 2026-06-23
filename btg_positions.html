@@ -1694,13 +1694,14 @@
         ? [p.client_code||'', p.conta||'', 'Caixa BTG'].join('|')
         : [p.client_code||'', p.conta||'', p.nome||'', p.taxa!=null?p.taxa:'', p.vencimento||''].join('|');
       if (!aggMap.has(key)) {
-        const cls        = resolveClassificacao(p);
-        const emissor    = (cls && cls.emissor != null) ? cls.emissor : (p.emissor || '');
-        const tipoAtivo  = (cls && cls.tipo_ativo) || '';
-        const rawIdx     = (cls && cls.indexador) || p.indexador || '';
-        const taxa       = parseFloat(p.taxa);
+        const cls     = resolveClassificacao(p);
+        const emissor = (cls && cls.emissor != null) ? cls.emissor : (p.emissor || '');
+        const rawIdx  = (cls && cls.indexador) || p.indexador || '';
+        const taxa    = parseFloat(p.taxa);
         let liquidez;
-        if (tipoAtivo === 'Emissão Bancária' && emissor.toUpperCase().includes('BTG') && rawIdx === 'CDI' && taxa === 100) {
+        if (p.classe === 'Caixa') {
+          liquidez = 0;
+        } else if (String(p.nome || '').toUpperCase().startsWith('CDB') && emissor.toUpperCase().includes('BTG') && rawIdx === 'CDI' && taxa === 100) {
           liquidez = 0;
         } else if (!p.vencimento) {
           liquidez = null;
