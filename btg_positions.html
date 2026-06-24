@@ -725,7 +725,7 @@
     const PAGE = 1000; let from = 0, all = [];
     while (true) {
       const { data, error } = await sb.from('tb_classificacao_ativos')
-        .select('codigo, ativo, indexador, on_off, vencimento, classe, direcionamento, emissor, tipo_ativo')
+        .select('codigo, ativo, indexador, on_off, vencimento, classe, direcionamento, emissor, tipo_ativo, liquidez')
         .range(from, from + PAGE - 1);
       if (error) { console.error('loadClassificacao error:', error); break; }
       if (!data || data.length === 0) break;
@@ -1934,6 +1934,8 @@
           liquidez = 0;
         } else if (String(p.nome || '').toUpperCase().startsWith('CDB') && emissor.toUpperCase().includes('BTG') && rawIdx === 'CDI' && taxa === 100) {
           liquidez = 0;
+        } else if (cls && cls.tipo_ativo === 'fundo') {
+          liquidez = (cls.liquidez != null) ? cls.liquidez : null;
         } else if (!p.vencimento) {
           liquidez = null;
         } else {
