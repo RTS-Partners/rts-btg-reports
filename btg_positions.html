@@ -704,7 +704,7 @@
     document.getElementById('app-screen').style.display = 'block';
     document.getElementById('hdr-email').textContent = user.email;
     await Promise.all([loadHolidays(), loadClients(), loadClassificacao()]);
-    defaultDate = lastWorkingDay();
+    defaultDate = (await loadLatestDate()) || lastWorkingDay();
     document.getElementById('f-date').value = defaultDate;
     buildBankerDropdown(); rebuildClientDropdown();
     applyFilters();
