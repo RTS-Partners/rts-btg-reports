@@ -169,13 +169,17 @@
     /* ALLOC / MAT DRILL-DOWN MODAL */
     .alloc-drill-overlay, .mat-drill-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .alloc-drill-overlay.open, .mat-drill-overlay.open { display: flex; }
-    .alloc-drill-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-lg); width: 100%; max-width: 780px; max-height: 82vh; display: flex; flex-direction: column; overflow: hidden; }
+    .alloc-drill-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-lg); width: 100%; max-width: 1040px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
     .alloc-drill-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-shrink: 0; }
     .alloc-drill-title { font-size: 0.95rem; font-weight: 700; }
     .alloc-drill-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem; }
     .alloc-drill-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 0.15rem 0.45rem; line-height: 1; border-radius: 4px; flex-shrink: 0; }
     .alloc-drill-close:hover { background: var(--border); color: var(--text); }
     .alloc-drill-body { overflow-y: auto; flex: 1; }
+    .alloc-drill-body::-webkit-scrollbar { width: 7px; }
+    .alloc-drill-body::-webkit-scrollbar-track { background: var(--bg); }
+    .alloc-drill-body::-webkit-scrollbar-thumb { background: #3A3835; border-radius: 4px; }
+    .alloc-drill-body::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
     .alloc-drill-body table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
     .alloc-drill-body thead th { background: #242220; padding: 0.6rem 0.875rem; text-align: left; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0; z-index: 1; }
     .alloc-drill-body thead th.num { text-align: right; }
