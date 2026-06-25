@@ -791,7 +791,7 @@
     const cls = resolveClassificacao(p);
     const idx = (cls && cls.indexador) || p.indexador || 'Não Classificado';
     if (idx === 'CDI') return 'Pós-Fixado';
-    if (idx === 'IPCA') return 'Inflação';
+    if (idx === 'IPCA' || idx === 'IGP-M' || idx === 'IGPM') return 'Inflação';
     return idx;
   }
 
