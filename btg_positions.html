@@ -749,13 +749,26 @@
     return null;
   }
 
+  // strips BTG transaction prefixes so fund names resolve in classificacaoMap
+  const FUND_PREFIXES = ['aquisicao de cotas no fundo ', 'resgate de cotas no fundo '];
+  function normalizeFundNome(nome) {
+    if (!nome) return nome;
+    const s = nome.trim();
+    const lower = s.toLowerCase();
+    for (const prefix of FUND_PREFIXES) {
+      if (lower.startsWith(prefix)) return s.slice(prefix.length).trim();
+    }
+    return s;
+  }
+
   function resolveClassificacao(p) {
     if (p.codigo) {
       const byCode = classificacaoMap[p.codigo.trim()];
       if (byCode) return byCode;
     }
-    const ticker = cryptoTicker(p.nome);
-    return (p.nome && classificacaoMap[p.nome.trim()]) ||
+    const normNome = normalizeFundNome(p.nome);
+    const ticker = cryptoTicker(normNome);
+    return (normNome && classificacaoMap[normNome]) ||
            (ticker && classificacaoMap[ticker]) || null;
   }
 
