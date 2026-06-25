@@ -785,7 +785,9 @@
   function resolveIndexador(p) {
     const cls = resolveClassificacao(p);
     const idx = (cls && cls.indexador) || p.indexador || 'Não Classificado';
-    return idx === 'CDI' ? 'Pós-Fixado' : idx;
+    if (idx === 'CDI') return 'Pós-Fixado';
+    if (idx === 'IPCA') return 'Inflação';
+    return idx;
   }
 
   // helper: is this position Onshore?
