@@ -329,10 +329,10 @@
     <div class="tab-bar">
       <button class="tab-btn active" onclick="switchTab('asset-alloc')">Asset Allocation</button>
       <button class="tab-btn" onclick="switchTab('positions')">Posições</button>
-      <button class="tab-btn" onclick="switchTab('mat-table')">Vencimentos</button>
-      <button class="tab-btn" onclick="switchTab('mudancas')">Mudanças</button>
-      <button class="tab-btn" onclick="switchTab('movs')">Movs</button>
       <button class="tab-btn" onclick="switchTab('liquidez')">Liquidez</button>
+      <button class="tab-btn" onclick="switchTab('mat-table')">Vencimentos</button>
+      <button class="tab-btn" onclick="switchTab('movs')">Movs</button>
+      <button class="tab-btn" onclick="switchTab('mudancas')">Mudanças</button>
     </div>
 
     <!-- Posições -->
@@ -822,7 +822,7 @@
   /* TABS */
   function switchTab(name) {
     activeTab = name;
-    const TAB_NAMES = ['asset-alloc','positions','mat-table','mudancas','movs','liquidez'];
+    const TAB_NAMES = ['asset-alloc','positions','liquidez','mat-table','movs','mudancas'];
     document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', TAB_NAMES[i] === name));
     document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
