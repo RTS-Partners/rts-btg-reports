@@ -615,7 +615,8 @@
   let sortCol = null, sortDir = 'asc';
   let activeTab = 'asset-alloc';
   let clsChart = null, bnkChart = null, matChart = null, matBarChart = null, allocChart = null;
-  let classificacaoMap = {};   // codigo → {indexador, on_off, ...}
+  let classificacaoMap = {};       // codigo/ativo → {indexador, on_off, ...}
+  let normNomeToCodeMap = {};      // normNome(position.nome) → position.codigo, built after load
 
   const COL_IDX = {
     client_code:0, conta:1, conta_btg:2, classe:3, nome:4,
@@ -768,8 +769,11 @@
     }
     const normNome = normalizeFundNome(p.nome);
     const ticker = cryptoTicker(normNome);
-    return (normNome && classificacaoMap[normNome]) ||
-           (ticker && classificacaoMap[ticker]) || null;
+    if (normNome && classificacaoMap[normNome]) return classificacaoMap[normNome];
+    if (ticker && classificacaoMap[ticker]) return classificacaoMap[ticker];
+    // fallback: find another position row with same normNome that has a codigo
+    const fallbackCode = normNome && normNomeToCodeMap[normNome];
+    return (fallbackCode && classificacaoMap[fallbackCode]) || null;
   }
 
   function resolveEmissor(p) {
@@ -831,7 +835,17 @@
     const date = document.getElementById('f-date').value;
     if (!date) { alert('Selecione uma data.'); return; }
     setSearching(true); setStateLoading();
-    try { allPositions = await fetchPositions(date); applyClientFilter(); }
+    try {
+      allPositions = await fetchPositions(date);
+      normNomeToCodeMap = {};
+      allPositions.forEach(p => {
+        if (p.codigo && p.nome) {
+          const k = normalizeFundNome(p.nome);
+          if (k && !normNomeToCodeMap[k]) normNomeToCodeMap[k] = p.codigo.trim();
+        }
+      });
+      applyClientFilter();
+    }
     catch (err) {
       if (err?.status === 401 || String(err?.message).toLowerCase().includes('jwt') || String(err?.message).toLowerCase().includes('token')) {
         await sb.auth.signOut(); location.reload();
