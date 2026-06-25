@@ -841,6 +841,8 @@
       allPositions = await fetchPositions(date);
       normNomeToCodeMap = {};
       allPositions.forEach(p => {
+        if (p.nome && p.nome.trim().toLowerCase().startsWith('resgate de cotas no fundo ') && p.valor_bruto != null)
+          p.valor_bruto = -Math.abs(p.valor_bruto);
         if (p.codigo && p.nome) {
           const k = normalizeFundNome(p.nome);
           if (k && !normNomeToCodeMap[k]) normNomeToCodeMap[k] = p.codigo.trim();
