@@ -342,7 +342,6 @@
             <span class="table-title">Posições BTG</span>
             <span class="table-count" id="tbl-count"></span>
           </div>
-          <label class="check-label"><input type="checkbox" id="f-caixa-btg" onchange="render()"> Caixa BTG</label>
         </div>
         <div class="table-wrapper">
           <div id="tbl-state" class="state-box">
@@ -776,6 +775,11 @@
     return (fallbackCode && classificacaoMap[fallbackCode]) || null;
   }
 
+  function displayNome(p) {
+    const cl = resolveClassificacao(p);
+    return (cl && cl.ativo) ? cl.ativo : (p.nome || '');
+  }
+
   function resolveEmissor(p) {
     const cls = resolveClassificacao(p);
     return (cls && cls.emissor != null) ? cls.emissor : p.emissor;
@@ -885,7 +889,6 @@
     document.getElementById('f-banker').value = '';
     rebuildClientDropdown();
     allPositions = []; filteredRows = [];
-    document.getElementById('f-caixa-btg').checked = false;
     sortCol = null; sortDir = 'asc';
     clearSummary(); setStateEmpty();
     [matBarChart].forEach(c => { if (c) c.destroy(); });
@@ -926,7 +929,7 @@
         if (co !== 0) return co;
         const cl = String(a.classe||'').localeCompare(String(b.classe||''));
         if (cl !== 0) return cl;
-        const nm = String(a.nome||'').localeCompare(String(b.nome||''));
+        const nm = displayNome(a).localeCompare(displayNome(b));
         if (nm !== 0) return nm;
         return vencSort(a).localeCompare(vencSort(b));
       });
@@ -952,7 +955,7 @@
         <td>${x(p.conta)}</td>
         <td class="td-muted td-mono">${x(p.conta_btg)}</td>
         <td>${x(classLabel(p.classe))}</td>
-        <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
+        <td class="td-ativo" title="${String(displayNome(p)).replace(/"/g,'&quot;')}">${x(displayNome(p))}</td>
         <td class="td-muted td-mono">${x(p.codigo)}</td>
         <td class="td-muted td-emissor" title="${emissor != null ? String(emissor).replace(/"/g,'&quot;') : ''}">${x(emissor)}</td>
         <td class="td-indexador" title="${p.indexador != null ? String(p.indexador).replace(/"/g,'&quot;') : ''}">${x(p.indexador)}</td>
@@ -964,42 +967,32 @@
   }
   function render() {
     if (!filteredRows.length) { document.getElementById('data-table').style.display = 'none'; document.getElementById('tbl-count').textContent = ''; setStateNoResults(); return; }
-    // Aggregate: Caixa BTG collapses by client+conta only; others by client+conta+nome+taxa+vencimento
     const aggMap = new Map();
     filteredRows.forEach(p => {
-      const isCaixa = p.nome === 'Caixa BTG';
-      const key = isCaixa
-        ? [p.client_code||'', p.conta||'', 'Caixa BTG'].join('|')
-        : [p.client_code||'', p.conta||'', p.nome||'', p.taxa!=null?p.taxa:'', p.vencimento||''].join('|');
-      if (!aggMap.has(key)) aggMap.set(key, { ...p, valor_bruto: 0, quantidade: 0, vencimento: isCaixa ? null : p.vencimento });
+      const key = [p.client_code||'', p.conta||'', p.nome||'', p.taxa!=null?p.taxa:'', p.vencimento||''].join('|');
+      if (!aggMap.has(key)) aggMap.set(key, { ...p, valor_bruto: 0, quantidade: 0 });
       const a = aggMap.get(key);
       a.valor_bruto += parseFloat(p.valor_bruto) || 0;
       a.quantidade += parseFloat(p.quantidade) || 0;
     });
-    const caixaOnly = document.getElementById('f-caixa-btg').checked;
-    let aggRows = Array.from(aggMap.values());
-    if (caixaOnly) aggRows = aggRows.filter(p => p.nome === 'Caixa BTG');
+    const aggRows = Array.from(aggMap.values());
     if (!aggRows.length) { document.getElementById('data-table').style.display = 'none'; document.getElementById('tbl-count').textContent = ''; setStateNoResults(); return; }
     document.getElementById('tbl-state').style.display = 'none';
     document.getElementById('data-table').style.display = 'table';
     document.getElementById('tbl-count').textContent = ` — ${aggRows.length.toLocaleString('pt-BR')} linhas`;
-    if (caixaOnly) {
-      document.getElementById('tbl-body').innerHTML = aggRows.map(p => rowHtml(p)).join('');
-    } else {
-      const grps = []; let gc = null;
-      aggRows.forEach(p => {
-        const gkey = (p.client_code||'') + '|' + (p.conta||'');
-        if (!gc || gc.key !== gkey) { gc = { key: gkey, label: [p.client_code, p.conta].filter(Boolean).join(' — '), rows: [], total: 0 }; grps.push(gc); }
-        gc.rows.push(p); gc.total += p.valor_bruto;
-      });
-      document.getElementById('tbl-body').innerHTML = grps.map(g =>
-        g.rows.map(p => rowHtml(p)).join('') +
-        `<tr class="subtotal-row">
-          <td colspan="11" class="td-right td-muted">${x(g.label)}</td>
-          <td class="td-right"><strong>${fmtBRL(g.total)}</strong></td>
-        </tr>`
-      ).join('');
-    }
+    const grps = []; let gc = null;
+    aggRows.forEach(p => {
+      const gkey = (p.client_code||'') + '|' + (p.conta||'');
+      if (!gc || gc.key !== gkey) { gc = { key: gkey, label: [p.client_code, p.conta].filter(Boolean).join(' — '), rows: [], total: 0 }; grps.push(gc); }
+      gc.rows.push(p); gc.total += p.valor_bruto;
+    });
+    document.getElementById('tbl-body').innerHTML = grps.map(g =>
+      g.rows.map(p => rowHtml(p)).join('') +
+      `<tr class="subtotal-row">
+        <td colspan="11" class="td-right td-muted">${x(g.label)}</td>
+        <td class="td-right"><strong>${fmtBRL(g.total)}</strong></td>
+      </tr>`
+    ).join('');
     document.querySelectorAll('#data-table thead th').forEach((th, i) => {
       th.classList.remove('sort-asc', 'sort-desc');
       if (sortCol !== null && i === COL_IDX[sortCol]) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
@@ -1091,7 +1084,7 @@
   function renderMatTable() {
     const onshoreAll = filteredRows.filter(p => isOnshore(p));
     const totalOnshore = onshoreAll.reduce((s, p) => s + (parseFloat(p.valor_bruto) || 0), 0);
-    const rows = onshoreAll.filter(p => p.vencimento);
+    const rows = onshoreAll.filter(p => p.vencimento && !FUND_PREFIXES.some(pfx => (p.nome || '').trim().toLowerCase().startsWith(pfx)));
     if (!rows.length) {
       document.getElementById('mat-tbl-wrap').style.display = 'none';
       document.getElementById('mat-tbl-state').style.display = 'block';
@@ -1497,7 +1490,7 @@
     const aggMap = new Map();
     rows.forEach(p => {
       const key = (p.codigo || '') + '|' + (p.nome || '');
-      if (!aggMap.has(key)) aggMap.set(key, { nome: p.nome || '', codigo: p.codigo || '', emissor: p.emissor || '', valor_bruto: 0 });
+      if (!aggMap.has(key)) aggMap.set(key, { nome: displayNome(p), codigo: p.codigo || '', emissor: p.emissor || '', valor_bruto: 0 });
       aggMap.get(key).valor_bruto += parseFloat(p.valor_bruto) || 0;
     });
     const assets = [...aggMap.values()].sort((a, b) => b.valor_bruto - a.valor_bruto);
@@ -1529,7 +1522,7 @@
     const aggMap = new Map();
     rows.forEach(p => {
       const key = (p.codigo || '') + '|' + (p.nome || '');
-      if (!aggMap.has(key)) aggMap.set(key, { nome: p.nome || '', codigo: p.codigo || '', emissor: p.emissor || '', vencimento: p.vencimento || '', valor_bruto: 0 });
+      if (!aggMap.has(key)) aggMap.set(key, { nome: displayNome(p), codigo: p.codigo || '', emissor: p.emissor || '', vencimento: p.vencimento || '', valor_bruto: 0 });
       aggMap.get(key).valor_bruto += parseFloat(p.valor_bruto) || 0;
     });
     const assets = [...aggMap.values()].sort((a, b) => b.valor_bruto - a.valor_bruto);
@@ -1582,7 +1575,7 @@
           conta:        ci.conta || p.conta || '',
           nome_cliente: ci.nome || '',
           banker:       ci.banker || p.banker || '',
-          nome:         p.nome || '',
+          nome:         displayNome(p),
           codigo:       p.codigo || '',
           classe:       p.classe || '',
           indexador:    resolveIndexador(p),
@@ -1770,7 +1763,7 @@
           conta:        ci.conta || p.conta || '',
           nome_cliente: ci.nome || '',
           banker:       ci.banker || p.banker || '',
-          nome:         p.nome || '',
+          nome:         displayNome(p),
           codigo:       p.codigo || '',
           classe:       p.classe || '',
           indexador:    resolveIndexador(p),
@@ -1954,10 +1947,7 @@
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const aggMap = new Map();
     filteredRows.forEach(p => {
-      const isCaixa = p.nome === 'Caixa BTG';
-      const key = isCaixa
-        ? [p.client_code||'', p.conta||'', 'Caixa BTG'].join('|')
-        : [p.client_code||'', p.conta||'', p.nome||'', p.taxa!=null?p.taxa:'', p.vencimento||''].join('|');
+      const key = [p.client_code||'', p.conta||'', p.nome||'', p.taxa!=null?p.taxa:'', p.vencimento||''].join('|');
       if (!aggMap.has(key)) {
         const cls     = resolveClassificacao(p);
         const emissor = (cls && cls.emissor != null) ? cls.emissor : (p.emissor || '');
@@ -1975,7 +1965,7 @@
         } else {
           liquidez = Math.ceil((new Date(p.vencimento + 'T12:00:00') - today) / 86400000);
         }
-        aggMap.set(key, { ...p, valor_bruto: 0, quantidade: 0, vencimento: isCaixa ? null : p.vencimento, _emissor: emissor, liquidez });
+        aggMap.set(key, { ...p, valor_bruto: 0, quantidade: 0, _emissor: emissor, liquidez });
       }
       const a = aggMap.get(key);
       a.valor_bruto += parseFloat(p.valor_bruto) || 0;
@@ -1999,25 +1989,39 @@
     liqStateEl.style.display = 'none';
     liqWrapEl.style.display  = 'block';
     document.getElementById('liq-count').textContent = ` — ${rows.length.toLocaleString('pt-BR')} linhas`;
-    document.getElementById('liq-body').innerHTML = rows.map(p => {
-      const liqDisplay = p.liquidez === null ? '<span class="td-muted">—</span>' : p.liquidez.toLocaleString('pt-BR');
-      const contaTotal = contaTotals.get(p.conta_btg) || 0;
-      const pct = contaTotal ? (p.valor_bruto / contaTotal * 100) : 0;
-      const pctDisplay = pct.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
-      return `<tr>
-        <td><span class="badge">${x(p.client_code)}</span></td>
-        <td>${x(p.conta)}</td>
-        <td class="td-muted td-mono">${x(p.conta_btg)}</td>
-        <td>${x(classLabel(p.classe))}</td>
-        <td class="td-ativo" title="${p.nome != null ? String(p.nome).replace(/"/g,'&quot;') : ''}">${x(p.nome)}</td>
-        <td class="td-muted td-mono">${x(p.codigo)}</td>
-        <td class="td-muted td-emissor" title="${p._emissor != null ? String(p._emissor).replace(/"/g,'&quot;') : ''}">${x(p._emissor)}</td>
-        <td class="td-muted td-vencimento">${fmtDate(p.vencimento)}</td>
-        <td class="td-right td-muted">${liqDisplay}</td>
-        <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
-        <td class="td-right td-muted">${pctDisplay}</td>
-      </tr>`;
-    }).join('');
+    const liqGrps = []; let lg = null;
+    rows.forEach(p => {
+      if (!lg || lg.key !== p.conta_btg) {
+        lg = { key: p.conta_btg, label: [p.client_code, p.conta].filter(Boolean).join(' — '), rows: [], total: 0 };
+        liqGrps.push(lg);
+      }
+      lg.rows.push(p); lg.total += p.valor_bruto;
+    });
+    document.getElementById('liq-body').innerHTML = liqGrps.map(g =>
+      g.rows.map(p => {
+        const liqDisplay = p.liquidez === null ? '<span class="td-muted">—</span>' : p.liquidez.toLocaleString('pt-BR');
+        const contaTotal = contaTotals.get(p.conta_btg) || 0;
+        const pct = contaTotal ? (p.valor_bruto / contaTotal * 100) : 0;
+        const pctDisplay = pct.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+        return `<tr>
+          <td><span class="badge">${x(p.client_code)}</span></td>
+          <td>${x(p.conta)}</td>
+          <td class="td-muted td-mono">${x(p.conta_btg)}</td>
+          <td>${x(classLabel(p.classe))}</td>
+          <td class="td-ativo" title="${String(displayNome(p)).replace(/"/g,'&quot;')}">${x(displayNome(p))}</td>
+          <td class="td-muted td-mono">${x(p.codigo)}</td>
+          <td class="td-muted td-emissor" title="${p._emissor != null ? String(p._emissor).replace(/"/g,'&quot;') : ''}">${x(p._emissor)}</td>
+          <td class="td-muted td-vencimento">${fmtDate(p.vencimento)}</td>
+          <td class="td-right td-muted">${liqDisplay}</td>
+          <td class="td-right"><strong>${fmtBRL(p.valor_bruto)}</strong></td>
+          <td class="td-right td-muted">${pctDisplay}</td>
+        </tr>`;
+      }).join('') +
+      `<tr class="subtotal-row">
+        <td colspan="10" class="td-right td-muted">${x(g.label)}</td>
+        <td class="td-right"><strong>${fmtBRL(g.total)}</strong></td>
+      </tr>`
+    ).join('');
   }
 </script>
 </body>
